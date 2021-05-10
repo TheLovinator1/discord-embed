@@ -1,0 +1,12 @@
+version: "3"
+services:
+  discord-nice-embed-maker-for-my-yoy:
+    image: thelovinator/discord-nice-embed-maker-for-my-yoy
+    container_name: discord-nice-embed-maker-for-my-yoy
+    ports:
+      - "5000:5000"
+    volumes:
+      - uploads:/home/botuser/static/tweets
+    restart: unless-stopped
+volumes:
+  uploads:
