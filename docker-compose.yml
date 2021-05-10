@@ -6,7 +6,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - uploads:/home/botuser/static/tweets
+      - uploads:/home/botuser/Uploads
     restart: unless-stopped
 volumes:
   uploads:
