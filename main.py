@@ -3,15 +3,7 @@ import shlex
 import subprocess
 from datetime import datetime
 
-from flask import (
-    Flask,
-    flash,
-    redirect,
-    render_template,
-    request,
-    send_from_directory,
-    url_for,
-)
+from flask import Flask, flash, redirect, render_template, request, url_for
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -79,18 +71,20 @@ def upload_file():
     if request.method == "POST":
         # check if the post request has the file part
         if "file" not in request.files:
-            flash("No file part")
+            flash("No file part", "error")
             return redirect(request.url)
         file = request.files["file"]
+
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == "":
-            flash("No selected file")
+            flash("No selected file", "error")
             return redirect(request.url)
+
         if file:
             filename = secure_filename(file.filename)
             print(f"{filename=}")
-            filepath = f"Uploads/{file.filename}"
+            filepath = f"Uploads/v/{filename}"
             print(f"{filepath=}")
             file.save(filepath)
 
@@ -98,10 +92,10 @@ def upload_file():
             print(f"{height=}")
             print(f"{width=}")
 
-            screenshot_url = get_first_frame(filepath, file.filename)
+            screenshot_url = get_first_frame(filepath, filename)
             print(f"{screenshot_url=}")
 
-            video_url = f"https://killyoy.lovinator.space/{file.filename}"
+            video_url = f"https://killyoy.lovinator.space/v/{filename}"
             print(f"{video_url=}")
 
             html_url = generate_html(
@@ -112,13 +106,11 @@ def upload_file():
                 filename,
             )
             print(f"{html_url=}")
-            return redirect(url_for("uploaded_file", filename=file.filename))
+
+            return {"html_url": f"{html_url}"}
+
+    # If GET
     return redirect(url_for("index"))
-
-
-@app.route("/<filename>")
-def uploaded_file(filename):
-    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
 if __name__ == "__main__":

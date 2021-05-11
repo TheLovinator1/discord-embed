@@ -35,7 +35,7 @@ COPY --from=compile-image /opt/venv /opt/venv
 RUN useradd --create-home botuser
 
 # Create directories we need
-RUN mkdir -p /home/botuser/Uploads && mkdir -p /home/botuser/templates
+RUN mkdir -p /home/botuser/Uploads/a && mkdir -p /home/botuser/templates
 
 # Change ownership of directories
 RUN chown -R botuser:botuser /home/botuser && chmod -R 755 /home/botuser
