@@ -45,6 +45,7 @@ def generate_html(
     """
 
     html_url = f"https://killyoy.lovinator.space/{video_filename}"
+    video_filename += ".html"
 
     with open(f"Uploads/{video_filename}", "w") as file:
         file.write(video_html)
