@@ -44,7 +44,6 @@ def generate_html(
     </head>
     """
 
-    video_filename += ".html"
     html_url = f"https://killyoy.lovinator.space/{video_filename}"
 
     with open(f"Uploads/{video_filename}", "w") as file:
