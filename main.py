@@ -1,6 +1,8 @@
 import json
+import os
 import shlex
 import subprocess
+import sys
 from datetime import datetime
 
 from flask import Flask, flash, redirect, render_template, request, url_for
@@ -8,9 +10,13 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "Uploads"
+try:
+    domain = os.environ["DOMAIN"]  # https://killyoy.lovinator.space/
+except KeyError:
+    sys.exit("Environment variable 'domanin' is missing!")
+print(f"{domain=}")
 
 
-# function to find the resolution of the input video file
 def find_video_resolution(path_to_video):
     cmd = "ffprobe -v quiet -print_format json -show_streams "
     args = shlex.split(cmd)
@@ -31,7 +37,7 @@ def generate_html(
 ):
     video_html = f"""
     <!DOCTYPE html>
-
+    <html>
     <!-- Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} -->
     <head>
         <meta property="og:type" content="video.other">
@@ -42,9 +48,10 @@ def generate_html(
         <meta name="twitter:image" content="{video_screenshot}">
         <meta http-equiv="refresh" content="0;url={video_url}">
     </head>
+    </html>
     """
 
-    html_url = f"https://killyoy.lovinator.space/{video_filename}"
+    html_url = f"{domain}{video_filename}"
     video_filename += ".html"
 
     with open(f"Uploads/{video_filename}", "w") as file:
@@ -58,7 +65,7 @@ def get_first_frame(path_video, file_filename):
 
     subprocess.check_output(args).decode("utf-8")
 
-    return f"https://killyoy.lovinator.space/{file_filename}.jpg"
+    return f"{domain}{file_filename}.jpg"
 
 
 @app.route("/")
@@ -95,7 +102,7 @@ def upload_file():
             screenshot_url = get_first_frame(filepath, filename)
             print(f"{screenshot_url=}")
 
-            video_url = f"https://killyoy.lovinator.space/v/{filename}"
+            video_url = f"{domain}v/{filename}"
             print(f"{video_url=}")
 
             html_url = generate_html(
