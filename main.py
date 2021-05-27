@@ -13,7 +13,7 @@ app.config["UPLOAD_FOLDER"] = "Uploads"
 try:
     domain = os.environ["DOMAIN"]  # https://killyoy.lovinator.space/
 except KeyError:
-    sys.exit("Environment variable 'domanin' is missing!")
+    sys.exit("Environment variable 'domain' is missing!")
 print(f"{domain=}")
 
 
