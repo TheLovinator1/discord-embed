@@ -4,7 +4,7 @@ import shlex
 import subprocess
 import sys
 from datetime import datetime
-from typing import List
+from pathlib import Path
 
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
@@ -19,25 +19,39 @@ except KeyError:
 
 @app.post("/uploadfiles/")
 async def upload_file(file: UploadFile = File(...)):
+    content_type = file.content_type
     try:
-        if upload_file.content_type == "video/mp4":
-            os.mkdir("videos")
-        elif upload_file.content_type == "":
-            os.mkdir("videos")
-        elif upload_file.content_type == "":
-            os.mkdir("files")
+        if content_type.startswith("video/"):
+            output_folder = "Uploads/video"
+            video_url = f"{domain}video/{file.filename}"
+            Path(output_folder).mkdir(parents=True, exist_ok=True)
+
+        elif content_type.startswith("image/"):
+            output_folder = "Uploads/image"
+            video_url = f"{domain}image/{file.filename}"
+            Path(output_folder).mkdir(parents=True, exist_ok=True)
+
+        elif content_type.startswith("text/"):
+            output_folder = "Uploads/text"
+            video_url = f"{domain}text/{file.filename}"
+            Path(output_folder).mkdir(parents=True, exist_ok=True)
+
+        else:
+            output_folder = "Uploads/files"
+            video_url = f"{domain}files/{file.filename}"
+            Path(output_folder).mkdir(parents=True, exist_ok=True)
+
     except Exception as e:
         print(e)  # TODO: Send to Discord
 
     print(file.filename)
-    file_location = f"Uploads/v/{file.filename}"
+    file_location = f"{output_folder}/{file.filename}"
 
     with open(file_location, "wb+") as file_object:
         file_object.write(file.file.read())
 
     height, width = find_video_resolution(file_location)
     screenshot_url = get_first_frame(file_location, file.filename)
-    video_url = f"{domain}v/{file.filename}"
 
     html_url = generate_html(
         video_url,
@@ -54,6 +68,7 @@ async def upload_file(file: UploadFile = File(...)):
         "height": f"{height}",
         "screenshot_url": f"{screenshot_url}",
         "filename": f"{file.filename}",
+        "content_type": f"{content_type}",
     }
 
 
