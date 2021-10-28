@@ -113,28 +113,28 @@ async def main():
     return HTMLResponse(content=content)
 
 
-def generate_html(video_url, video_width, video_height, video_screenshot, video_filename):
+def generate_html(url: str, width: int, height: int, screenshot: str, filename: str):
     video_html = f"""
     <!DOCTYPE html>
     <html>
     <!-- Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} -->
     <head>
         <meta property="og:type" content="video.other">
-        <meta property="twitter:player" content="{video_url}">
+        <meta property="twitter:player" content="{url}">
         <meta property="og:video:type" content="text/html">
-        <meta property="og:video:width" content="{video_width}">
-        <meta property="og:video:height" content="{video_height}">
-        <meta name="twitter:image" content="{video_screenshot}">
-        <meta http-equiv="refresh" content="0;url={video_url}">
+        <meta property="og:video:width" content="{width}">
+        <meta property="og:video:height" content="{height}">
+        <meta name="twitter:image" content="{screenshot}">
+        <meta http-equiv="refresh" content="0;url={url}">
     </head>
     </html>
     """
 
-    video_filename += ".html"
+    filename += ".html"
 
-    with open(f"Uploads/{video_filename}", "w") as file:
+    with open(f"Uploads/{filename}", "w", encoding="utf-8") as file:
         file.write(video_html)
-    return f"{domain}{video_filename}"
+    return f"{domain}{filename}"
 
 
 def find_video_resolution(path_to_video):
