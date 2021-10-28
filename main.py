@@ -6,9 +6,11 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+from dhooks import Webhook
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
 
+hook = Webhook(os.environ["WEBHOOK"])
 app = FastAPI()
 
 try:
@@ -42,7 +44,8 @@ async def upload_file(file: UploadFile = File(...)):
             Path(output_folder).mkdir(parents=True, exist_ok=True)
 
     except Exception as e:
-        print(e)  # TODO: Send to Discord
+        print(f"Failed to get content type/create folder: {e}")
+        hook.send(f"Failed to get content type/create folder: {e}")
 
     print(file.filename)
     file_location = f"{output_folder}/{file.filename}"
