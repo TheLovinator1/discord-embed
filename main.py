@@ -17,6 +17,8 @@ try:
     domain = os.environ["DOMAIN"]
 except KeyError:
     sys.exit("Environment variable 'DOMAIN' is missing!")
+if not domain.endswith("/"):
+    domain += "/"
 
 
 @app.post("/uploadfiles/")
