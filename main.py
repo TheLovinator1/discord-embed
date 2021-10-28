@@ -208,6 +208,6 @@ def make_thumbnail(path_video: str, file_filename: str) -> str:
         str: Returns thumbnail filename.
     """
     out_filename = f"{domain}{file_filename}.jpg"
-    ffmpeg.input(path_video, ss="1").output(out_filename, vframes=1).run()
+    ffmpeg.input(path_video, ss="1").output(f"Uploads/{file_filename}.jpg", vframes=1).run()
 
     return out_filename
