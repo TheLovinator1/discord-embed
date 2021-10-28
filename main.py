@@ -11,7 +11,24 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
 
 hook = Webhook(os.environ["WEBHOOK"])
-app = FastAPI()
+
+app = FastAPI(
+    title="discord-nice-embed",
+    description="""
+Discord will only create embeds for videos and images if they are smaller than
+ 8mb. We can "abuse" this by using the "twitter:image" HTML meta tag.
+""",
+    version="0.0.1",
+    contact={
+        "name": "Joakim Hellsén",
+        "url": "https://github.com/TheLovinator1",
+        "email": "tlovinator@gmail.com",
+    },
+    license_info={
+        "name": "GPL-3.0",
+        "url": "https://www.gnu.org/licenses/gpl-3.0.txt",
+    },
+)
 
 try:
     domain = os.environ["DOMAIN"]
