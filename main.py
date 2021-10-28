@@ -6,11 +6,8 @@ from datetime import datetime
 from pathlib import Path
 
 import ffmpeg
-from dhooks import Webhook
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
-
-hook = Webhook(os.environ["WEBHOOK"])
 
 app = FastAPI(
     title="discord-nice-embed",
@@ -72,7 +69,6 @@ async def upload_file(file: UploadFile = File(...)):
 
     except Exception as exception:  # pylint: disable=broad-except
         print(f"Failed to get content type/create folder: {exception}")
-        hook.send(f"Failed to get content type/create folder: {exception}")
 
     file_location = f"{output_folder}/{file.filename}"
 

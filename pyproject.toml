@@ -7,7 +7,6 @@ authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = {extras = ["all"], version = "^0.70.0"}
-dhooks = {git = "https://github.com/kyb3r/dhooks"}
 ffmpeg-python = "^0.2.0"
 
 [tool.poetry.dev-dependencies]
