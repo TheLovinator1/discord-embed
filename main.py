@@ -113,12 +113,11 @@ def generate_html(video_url, video_width, video_height, video_screenshot, video_
     </html>
     """
 
-    html_url = f"{domain}{video_filename}"
     video_filename += ".html"
 
     with open(f"Uploads/{video_filename}", "w") as file:
         file.write(video_html)
-    return html_url
+    return f"{domain}{video_filename}"
 
 
 def find_video_resolution(path_to_video):
