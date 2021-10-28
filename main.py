@@ -60,12 +60,18 @@ async def upload_file(file: UploadFile = File(...)):
 @app.get("/")
 async def main():
     content = """
+<!DOCTYPE html>
+<html>
+<head>
+<title>discord-nice-embed</title>
+</head>
 <body>
 <form action="/uploadfiles/" enctype="multipart/form-data" method="post">
 <input name="file" type="file">
 <input type="submit">
 </form>
 </body>
+</html>
     """
     return HTMLResponse(content=content)
 
