@@ -2,40 +2,20 @@
 # don't need them when run the application so we can selectively copy artifacts
 # from this stage (compile-image) to second one (runtime-image), leaving 
 # behind everything we don't need in the final build. 
-FROM python:3.9-slim AS compile-image
+FROM python:3.9-slim as requirements-stage
 
-# We don't want apt-get to interact with us,
-# and we want the default answers to be used for all questions.
-# Is it also completely silent and unobtrusive.
-ARG DEBIAN_FRONTEND=noninteractive
+WORKDIR /tmp
 
-# Update packages and install needed packages to build our requirements.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential gcc git
+RUN pip install poetry
 
-# Create new virtual environment in /opt/venv and change to it.
-ENV VIRTUAL_ENV=/opt/venv
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+COPY ./pyproject.toml ./poetry.lock /tmp/
 
-# Copy and install requirements.
-COPY requirements.txt .
-RUN pip install --disable-pip-version-check --no-cache-dir --requirement requirements.txt
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-# Change to our second stage. This is the one that will run the application.
-FROM python:3.9-slim AS runtime-image
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg
-# Copy Python dependencies from our build image.
-COPY --from=compile-image /opt/venv /opt/venv
-
-
+FROM python:3.9-slim
 
 # Create user so we don't run as root.
 RUN useradd --create-home botuser
-
-# Create directories we need
-RUN mkdir -p /home/botuser/Uploads/a && mkdir -p /home/botuser/templates
 
 # Change ownership of directories
 RUN chown -R botuser:botuser /home/botuser && chmod -R 755 /home/botuser
@@ -46,10 +26,16 @@ USER botuser
 # Change directory to where we will run the application.
 WORKDIR /home/botuser
 
+ENV PATH "$PATH:/home/botuser/.local/bin"
+
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+
 # Copy our Python application to our home directory.
+COPY --from=requirements-stage /tmp/requirements.txt /home/botuser/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /home/botuser/requirements.txt
+
 COPY main.py ./
-COPY Uploads/ ./Uploads
-COPY templates/ ./templates
 
 # Don't generate byte code (.pyc-files). 
 # These are only needed if we run the python-files several times.
@@ -72,4 +58,4 @@ ENV FLASK_RUN_HOST=0.0.0.0
 EXPOSE 5000
 
 # Run bot.
-CMD [ "gunicorn", "--workers=2", "--threads=4", "--log-file=-", "--bind=0.0.0.0:5000", "main:app"]
+CMD ["uvicorn", "main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "80"]
