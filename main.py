@@ -70,7 +70,7 @@ async def upload_file(file: UploadFile = File(...)):
             video_url = f"{domain}files/{file.filename}"
             Path(output_folder).mkdir(parents=True, exist_ok=True)
 
-    except Exception as exception:
+    except Exception as exception:  # pylint: disable=broad-except
         print(f"Failed to get content type/create folder: {exception}")
         hook.send(f"Failed to get content type/create folder: {exception}")
 
