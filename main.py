@@ -1,11 +1,11 @@
-import json
+"""Website for uploading files and creating .HTMLs and thumbnails so we can embed files in Discord.
+"""
 import os
-import shlex
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
 
+import ffmpeg
 from dhooks import Webhook
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
@@ -40,6 +40,14 @@ if not domain.endswith("/"):
 
 @app.post("/uploadfiles/")
 async def upload_file(file: UploadFile = File(...)):
+    """Page for uploading files.
+
+    Args:
+        file (UploadFile): Our uploaded file. Defaults to File(...).
+
+    Returns:
+        HTMLResponse: Returns HTML for site.
+    """
     content_type = file.content_type
     try:
         if content_type.startswith("video/"):
@@ -62,18 +70,17 @@ async def upload_file(file: UploadFile = File(...)):
             video_url = f"{domain}files/{file.filename}"
             Path(output_folder).mkdir(parents=True, exist_ok=True)
 
-    except Exception as e:
-        print(f"Failed to get content type/create folder: {e}")
-        hook.send(f"Failed to get content type/create folder: {e}")
+    except Exception as exception:
+        print(f"Failed to get content type/create folder: {exception}")
+        hook.send(f"Failed to get content type/create folder: {exception}")
 
-    print(file.filename)
     file_location = f"{output_folder}/{file.filename}"
 
     with open(file_location, "wb+") as file_object:
         file_object.write(file.file.read())
 
     height, width = find_video_resolution(file_location)
-    screenshot_url = get_first_frame(file_location, file.filename)
+    screenshot_url = make_thumbnail(file_location, file.filename)
 
     html_url = generate_html(
         video_url,
@@ -94,9 +101,17 @@ async def upload_file(file: UploadFile = File(...)):
     }
 
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def main():
-    content = """
+    """Our index view.
+
+    You can upload files here.
+
+    Returns:
+        HTMLResponse: Returns HTML for site.
+    """
+
+    return """
 <!DOCTYPE html>
 <html>
 <head>
@@ -109,11 +124,31 @@ async def main():
 </form>
 </body>
 </html>
+"""
+
+
+def generate_html(
+    url: str,
+    width: int,
+    height: int,
+    screenshot: str,
+    filename: str,
+) -> str:
+    """Genereta HTML for media files.
+
+    This is what we will send to other people on Discord.
+    You can remove the .html with your web server so the link will look normal.
+
+    Args:
+        url (str): URL for video.
+        width (int): Video width.
+        height (int): Video height.
+        screenshot (str): URL for screenshot. This is what you will see in Discord.
+        filename (str): Orignal video filenaame. We will append .html to the filename.
+
+    Returns:
+        str: [description]
     """
-    return HTMLResponse(content=content)
-
-
-def generate_html(url: str, width: int, height: int, screenshot: str, filename: str):
     video_html = f"""
     <!DOCTYPE html>
     <html>
@@ -134,28 +169,45 @@ def generate_html(url: str, width: int, height: int, screenshot: str, filename: 
 
     with open(f"Uploads/{filename}", "w", encoding="utf-8") as file:
         file.write(video_html)
+
     return f"{domain}{filename}"
 
 
-def find_video_resolution(path_to_video):
-    cmd = "ffprobe -v quiet -print_format json -show_streams "
-    args = shlex.split(cmd)
-    args.append(path_to_video)
-    # run the ffprobe process, decode stdout into utf-8 & convert to JSON
-    ffprobe_output = subprocess.check_output(args).decode("utf-8")
-    ffprobe_output = json.loads(ffprobe_output)
+def find_video_resolution(path_to_video: str) -> tuple[int, int]:
+    """Find video resolution.
 
-    # find height and width
-    height = ffprobe_output["streams"][0]["height"]
-    width = ffprobe_output["streams"][0]["width"]
+    Args:
+        path_to_video (str): Path to video file.
+
+    Returns:
+        tuple[int, int]: Returns height and width.
+    """
+    probe = ffmpeg.probe(path_to_video)
+    video_stream = next(
+        (stream for stream in probe["streams"] if stream["codec_type"] == "video"),
+        None,
+    )
+    if video_stream is None:
+        print("No video stream found", file=sys.stderr)
+        sys.exit(1)
+
+    width = int(video_stream["width"])
+    height = int(video_stream["height"])
 
     return height, width
 
 
-def get_first_frame(path_video, file_filename):
-    cmd = f"ffmpeg -y -i {path_video} -vframes 1 Uploads/{file_filename}.jpg"
-    args = shlex.split(cmd)
+def make_thumbnail(path_video: str, file_filename: str) -> str:
+    """Make thumbnail for Discord.
 
-    subprocess.check_output(args).decode("utf-8")
+    Args:
+        path_video (str): Path where media file is stored.
+        file_filename (str): File name for URL.
 
-    return f"{domain}{file_filename}.jpg"
+    Returns:
+        str: Returns thumbnail filename.
+    """
+    out_filename = f"{domain}{file_filename}.jpg"
+    ffmpeg.input(path_video, ss="1").output(out_filename, vframes=1).run()
+
+    return out_filename
