@@ -14,6 +14,15 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 FROM python:3.9-slim
 
+# TODO: Remove this
+# We don't want apt-get to interact with us,
+# and we want the default answers to be used for all questions.
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Update packages and install needed packages to build our requirements.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential ffmpeg
+
 # Create user so we don't run as root.
 RUN useradd --create-home botuser
 
@@ -27,8 +36,6 @@ USER botuser
 WORKDIR /home/botuser
 
 ENV PATH "$PATH:/home/botuser/.local/bin"
-
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
 # Copy our Python application to our home directory.
 COPY --from=requirements-stage /tmp/requirements.txt /home/botuser/requirements.txt
@@ -51,11 +58,8 @@ ENV PYTHONUNBUFFERED 1
 # Use our virtual environment that we created in the other stage.
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Make the website accessible outside localhost
-ENV FLASK_RUN_HOST=0.0.0.0
-
 # Expose the web port
 EXPOSE 5000
 
 # Run bot.
-CMD ["uvicorn", "main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "5000"]
