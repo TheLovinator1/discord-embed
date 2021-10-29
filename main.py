@@ -160,13 +160,13 @@ def generate_html(
     </head>
     </html>
     """
-
+    html_url = f"{domain}{filename}"
     filename += ".html"
 
     with open(f"Uploads/{filename}", "w", encoding="utf-8") as file:
         file.write(video_html)
 
-    return f"{domain}{filename}"
+    return html_url
 
 
 def find_video_resolution(path_to_video: str) -> tuple[int, int]:
