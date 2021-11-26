@@ -8,6 +8,8 @@ authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
 python = "^3.9"
 fastapi = {extras = ["all"], version = "^0.70.0"}
 ffmpeg-python = "^0.2.0"
+gunicorn = "^20.1.0"
+uvicorn = "^0.15.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
