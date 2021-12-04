@@ -130,7 +130,7 @@ def generate_html(
     screenshot: str,
     filename: str,
 ) -> str:
-    """Genereta HTML for media files.
+    """Generate HTML for media files.
 
     This is what we will send to other people on Discord.
     You can remove the .html with your web server so the link will look normal.
@@ -140,7 +140,7 @@ def generate_html(
         width (int): Video width.
         height (int): Video height.
         screenshot (str): URL for screenshot. This is what you will see in Discord.
-        filename (str): Orignal video filenaame. We will append .html to the filename.
+        filename (str): Original video filenaame. We will append .html to the filename.
 
     Returns:
         str: [description]
