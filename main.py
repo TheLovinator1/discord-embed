@@ -179,7 +179,7 @@ def generate_html(
     html_url = f"{domain}{filename}"
     filename += ".html"
 
-    with open(f"Uploads/{filename}", "w", encoding="utf-8") as file:
+    with open(f"{upload_folder}/{filename}", "w", encoding="utf-8") as file:
         file.write(video_html)
 
     return html_url
@@ -220,6 +220,6 @@ def make_thumbnail(path_video: str, file_filename: str) -> str:
         str: Returns thumbnail filename.
     """
     out_filename = f"{domain}{file_filename}.jpg"
-    ffmpeg.input(path_video, ss="1").output(f"Uploads/{file_filename}.jpg", vframes=1).run()
+    ffmpeg.input(path_video, ss="1").output(f"{upload_folder}/{file_filename}.jpg", vframes=1).run()
 
     return out_filename
