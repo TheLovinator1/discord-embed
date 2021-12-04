@@ -36,9 +36,9 @@ try:
 except KeyError:
     sys.exit("discord-embed: Environment variable 'DOMAIN' is missing!")
 
-# Append / to domain if it's missing.
-if not domain.endswith("/"):
-    domain += "/"
+# Remove trailing slash from domain.
+if domain.endswith("/"):
+    domain = domain[:-1]
 
 # Check if we have a folder for uploads.
 try:
@@ -46,7 +46,7 @@ try:
 except KeyError:
     sys.exit("discord-embed: Environment variable 'UPLOAD_FOLDER' is missing!")
 
-# Remove trailing slash from path
+# Remove trailing slash from path.
 if upload_folder.endswith("/"):
     upload_folder = upload_folder[:-1]
 
@@ -61,56 +61,58 @@ async def upload_file(file: UploadFile = File(...)):
     Returns:
         HTMLResponse: Returns HTML for site.
     """
-    content_type = file.content_type
-    try:
-        if content_type.startswith("video/"):
-            output_folder = f"{upload_folder}/video"
-            video_url = f"{domain}video/{file.filename}"
-            Path(output_folder).mkdir(parents=True, exist_ok=True)
+    if file.content_type.startswith("video/"):
+        file_type = "video"
 
-        elif content_type.startswith("image/"):
-            output_folder = f"{upload_folder}/image"
-            video_url = f"{domain}image/{file.filename}"
-            Path(output_folder).mkdir(parents=True, exist_ok=True)
+    elif file.content_type.startswith("image/"):
+        file_type = "image"
 
-        elif content_type.startswith("text/"):
-            output_folder = f"{upload_folder}/text"
-            video_url = f"{domain}text/{file.filename}"
-            Path(output_folder).mkdir(parents=True, exist_ok=True)
+    elif file.content_type.startswith("text/"):
+        file_type = "text"
 
-        else:
-            output_folder = f"{upload_folder}/files"
-            video_url = f"{domain}files/{file.filename}"
-            Path(output_folder).mkdir(parents=True, exist_ok=True)
+    else:
+        file_type = "files"
 
-    except Exception as exception:  # pylint: disable=broad-except
-        print(f"Failed to get content type/create folder: {exception}")
+    output_folder = f"{upload_folder}/{file_type}"
 
+    # Create folder if it doesn't exist.
+    Path(output_folder).mkdir(parents=True, exist_ok=True)
+
+    file_url = f"{domain}/{file_type}/{file.filename}"
     file_location = f"{output_folder}/{file.filename}"
 
     with open(file_location, "wb+") as file_object:
         file_object.write(file.file.read())
 
+    # Get file size.
+    file_size = os.stat(file_location).st_size
+
     height, width = find_video_resolution(file_location)
-    screenshot_url = make_thumbnail(file_location, file.filename)
 
-    html_url = generate_html(
-        video_url,
-        width,
-        height,
-        screenshot_url,
-        file.filename,
-    )
+    # Only create thumbnail if file is a video.
+    if file_type == "video":
+        screenshot_url = make_thumbnail_from_video(file_location, file.filename)
+    if file_type == "image" and file_size < 8000000:
+        print(f"File is smaller than 8mb: {file_size}")
+        screenshot_url = make_thumbnail_from_image(file_location, file.filename)
 
-    return {
+    html_url = generate_html(file_url, width, height, screenshot_url, file.filename)
+    json_output = {
         "html_url": f"{html_url}",
-        "video_url": f"{video_url}",
+        "video_url": f"{file_url}",
         "width": f"{width}",
         "height": f"{height}",
-        "screenshot_url": f"{screenshot_url}",
         "filename": f"{file.filename}",
-        "content_type": f"{content_type}",
+        "content_type": f"{file.content_type}",
+        "file_type": f"{file_type}",
+        "current_time": f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
     }
+
+    # Only add screenshot_url if it exists.
+    if screenshot_url:
+        json_output.update({"screenshot_url": f"{screenshot_url}"})
+
+    return json_output
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -176,7 +178,7 @@ def generate_html(
     </head>
     </html>
     """
-    html_url = f"{domain}{filename}"
+    html_url = f"{domain}/{filename}"
     filename += ".html"
 
     with open(f"{upload_folder}/{filename}", "w", encoding="utf-8") as file:
@@ -209,17 +211,32 @@ def find_video_resolution(path_to_video: str) -> tuple[int, int]:
     return height, width
 
 
-def make_thumbnail(path_video: str, file_filename: str) -> str:
-    """Make thumbnail for Discord.
+def make_thumbnail_from_video(path_video: str, file_filename: str) -> str:
+    """Make thumbnail for Discord. This is a screenshot of the video.
 
     Args:
-        path_video (str): Path where media file is stored.
+        path_video (str): Path where video file is stored.
         file_filename (str): File name for URL.
 
     Returns:
         str: Returns thumbnail filename.
     """
-    out_filename = f"{domain}{file_filename}.jpg"
     ffmpeg.input(path_video, ss="1").output(f"{upload_folder}/{file_filename}.jpg", vframes=1).run()
 
-    return out_filename
+    return f"{domain}/{file_filename}.jpg"
+
+
+def make_thumbnail_from_image(path_image: str, file_filename: str) -> str:
+    """Make thumbnail for Discord. This is for images.
+    This will change the image to 440 pixels wide and keep the aspect ratio.
+
+    Args:
+        path_image (str): Path where image is stored.
+        file_filename (str): File name for URL.
+
+    Returns:
+        str: Returns thumbnail filename.
+    """
+    ffmpeg.input(path_image).output(f"{upload_folder}/{file_filename}", vf="scale=440:-1").run()
+
+    return f"{domain}/{file_filename}"
