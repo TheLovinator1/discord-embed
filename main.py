@@ -36,7 +36,7 @@ try:
 except KeyError:
     sys.exit("discord-embed: Environment variable 'DOMAIN' is missing!")
 
-# Remove trailing slash from domain.
+# We check if the domain ends with a forward slash. If it does, we remove it.
 if domain.endswith("/"):
     domain = domain[:-1]
 
@@ -46,7 +46,7 @@ try:
 except KeyError:
     sys.exit("discord-embed: Environment variable 'UPLOAD_FOLDER' is missing!")
 
-# Remove trailing slash from path.
+# We check if the upload folder ends with a forward slash. If it does, we remove it.
 if upload_folder.endswith("/"):
     upload_folder = upload_folder[:-1]
 
@@ -61,54 +61,31 @@ async def upload_file(file: UploadFile = File(...)):
     Returns:
         HTMLResponse: Returns HTML for site.
     """
+    # TODO: Add syntax highlighting for text.
+
+    # Make custom html for video files.
     if file.content_type.startswith("video/"):
-        file_type = "video"
+        # Create folder if it doesn't exist.
+        Path(f"{upload_folder}/video").mkdir(parents=True, exist_ok=True)
 
-    elif file.content_type.startswith("image/"):
-        file_type = "image"
+        # Save file to disk.
+        with open(f"{upload_folder}/video/{file.filename}", "wb+") as file_object:
+            file_object.write(file.file.read())
 
-    elif file.content_type.startswith("text/"):
-        file_type = "text"
+        file_url = f"{domain}/video/{file.filename}"
+        file_location = f"{upload_folder}/video/{file.filename}"
+        height, width = find_video_resolution(file_location)
+        screenshot_url = make_thumbnail_from_video(file_location, file.filename)
+        html_url = generate_html(
+            filename=file.filename, url=file_url, width=width, height=height, screenshot=screenshot_url
+        )
+        return {"html_url": f"{html_url}"}
 
-    else:
-        file_type = "files"
-
-    output_folder = f"{upload_folder}/{file_type}"
-
-    # Create folder if it doesn't exist.
-    Path(output_folder).mkdir(parents=True, exist_ok=True)
-
-    file_url = f"{domain}/{file_type}/{file.filename}"
-    file_location = f"{output_folder}/{file.filename}"
-
-    with open(file_location, "wb+") as file_object:
+    # Save file to disk.
+    with open(f"{upload_folder}/{file.filename}", "wb+") as file_object:
         file_object.write(file.file.read())
 
-    height, width = find_video_resolution(file_location)
-
-    # Only create thumbnail if file is a video.
-    if file_type == "video":
-        screenshot_url = make_thumbnail_from_video(file_location, file.filename)
-    else:
-        return file_url
-
-    html_url = generate_html(file_url, width, height, screenshot_url, file.filename)
-    json_output = {
-        "html_url": f"{html_url}",
-        "video_url": f"{file_url}",
-        "width": f"{width}",
-        "height": f"{height}",
-        "filename": f"{file.filename}",
-        "content_type": f"{file.content_type}",
-        "file_type": f"{file_type}",
-        "current_time": f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-    }
-
-    # Only add screenshot_url if it exists.
-    if screenshot_url:
-        json_output.update({"screenshot_url": f"{screenshot_url}"})
-
-    return json_output
+    return {"html_url": f"{domain}/{file.filename}"}
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -137,17 +114,16 @@ async def main():
 """
 
 
-def generate_html(
-    url: str,
-    width: int,
-    height: int,
-    screenshot: str,
-    filename: str,
-) -> str:
-    """Generate HTML for media files.
+def generate_html(url: str, width: int, height: int, screenshot: str, filename: str) -> str:
+    """Generate HTML for video files.
 
     This is what we will send to other people on Discord.
     You can remove the .html with your web server so the link will look normal.
+    For example, with nginx, you can do this(note the $uri.html):
+    location / {
+            try_files $uri $uri/ $uri.html;
+    }
+
 
     Args:
         url (str): URL for video.
