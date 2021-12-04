@@ -1,19 +1,24 @@
 [tool.poetry]
 name = "discord-nice-embed-maker"
 version = "0.1.0"
-description = ""
+description = "Make nice embeds for Discord"
 authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+homepage = "https://github.com/TheLovinator1/discord-embed"
+repository = "https://github.com/TheLovinator1/discord-embed"
+keywords = ["website", "discord"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = {extras = ["all"], version = "^0.70.0"}
+fastapi = { extras = ["all"], version = "^0.70.0" }
 ffmpeg-python = "^0.2.0"
 gunicorn = "^20.1.0"
 uvicorn = "^0.15.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
-black = {version = "^21.9b0", allow-prereleases = true}
+black = { version = "^21.9b0", allow-prereleases = true }
 mypy = "^0.910"
 prospector = "^1.5.1"
 bandit = "^1.7.0"
