@@ -6,8 +6,11 @@ from datetime import datetime
 from pathlib import Path
 
 import ffmpeg
+from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
+
+load_dotenv()
 
 app = FastAPI(
     title="discord-nice-embed",
