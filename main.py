@@ -84,17 +84,13 @@ async def upload_file(file: UploadFile = File(...)):
     with open(file_location, "wb+") as file_object:
         file_object.write(file.file.read())
 
-    # Get file size.
-    file_size = os.stat(file_location).st_size
-
     height, width = find_video_resolution(file_location)
 
     # Only create thumbnail if file is a video.
     if file_type == "video":
         screenshot_url = make_thumbnail_from_video(file_location, file.filename)
-    if file_type == "image" and file_size < 8000000:
-        print(f"File is smaller than 8mb: {file_size}")
-        screenshot_url = make_thumbnail_from_image(file_location, file.filename)
+    else:
+        return file_url
 
     html_url = generate_html(file_url, width, height, screenshot_url, file.filename)
     json_output = {
@@ -224,19 +220,3 @@ def make_thumbnail_from_video(path_video: str, file_filename: str) -> str:
     ffmpeg.input(path_video, ss="1").output(f"{upload_folder}/{file_filename}.jpg", vframes=1).run()
 
     return f"{domain}/{file_filename}.jpg"
-
-
-def make_thumbnail_from_image(path_image: str, file_filename: str) -> str:
-    """Make thumbnail for Discord. This is for images.
-    This will change the image to 440 pixels wide and keep the aspect ratio.
-
-    Args:
-        path_image (str): Path where image is stored.
-        file_filename (str): File name for URL.
-
-    Returns:
-        str: Returns thumbnail filename.
-    """
-    ffmpeg.input(path_image).output(f"{upload_folder}/{file_filename}", vf="scale=440:-1").run()
-
-    return f"{domain}/{file_filename}"
