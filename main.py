@@ -27,12 +27,25 @@ Discord will only create embeds for videos and images if they are smaller than
     },
 )
 
+# Check if user has added a domain to the environment.
 try:
     domain = os.environ["DOMAIN"]
 except KeyError:
-    sys.exit("Environment variable 'DOMAIN' is missing!")
+    sys.exit("discord-embed: Environment variable 'DOMAIN' is missing!")
+
+# Append / to domain if it's missing.
 if not domain.endswith("/"):
     domain += "/"
+
+# Check if we have a folder for uploads.
+try:
+    upload_folder = os.environ["UPLOAD_FOLDER"]
+except KeyError:
+    sys.exit("discord-embed: Environment variable 'UPLOAD_FOLDER' is missing!")
+
+# Remove trailing slash from path
+if upload_folder.endswith("/"):
+    upload_folder = upload_folder[:-1]
 
 
 @app.post("/uploadfiles/")
@@ -48,22 +61,22 @@ async def upload_file(file: UploadFile = File(...)):
     content_type = file.content_type
     try:
         if content_type.startswith("video/"):
-            output_folder = "Uploads/video"
+            output_folder = f"{upload_folder}/video"
             video_url = f"{domain}video/{file.filename}"
             Path(output_folder).mkdir(parents=True, exist_ok=True)
 
         elif content_type.startswith("image/"):
-            output_folder = "Uploads/image"
+            output_folder = f"{upload_folder}/image"
             video_url = f"{domain}image/{file.filename}"
             Path(output_folder).mkdir(parents=True, exist_ok=True)
 
         elif content_type.startswith("text/"):
-            output_folder = "Uploads/text"
+            output_folder = f"{upload_folder}/text"
             video_url = f"{domain}text/{file.filename}"
             Path(output_folder).mkdir(parents=True, exist_ok=True)
 
         else:
-            output_folder = "Uploads/files"
+            output_folder = f"{upload_folder}/files"
             video_url = f"{domain}files/{file.filename}"
             Path(output_folder).mkdir(parents=True, exist_ok=True)
 
@@ -140,7 +153,7 @@ def generate_html(
         width (int): Video width.
         height (int): Video height.
         screenshot (str): URL for screenshot. This is what you will see in Discord.
-        filename (str): Original video filenaame. We will append .html to the filename.
+        filename (str): Original video filename. We will append .html to the filename.
 
     Returns:
         str: [description]
