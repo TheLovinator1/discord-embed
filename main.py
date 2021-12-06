@@ -151,6 +151,8 @@ def generate_html(url: str, width: int, height: int, screenshot: str, filename: 
     </html>
     """
     html_url = f"{domain}/{filename}"
+
+    # Take the filename and append .html to it.
     filename += ".html"
 
     with open(f"{upload_folder}/{filename}", "w", encoding="utf-8") as file:
@@ -193,6 +195,11 @@ def make_thumbnail_from_video(path_video: str, file_filename: str) -> str:
     Returns:
         str: Returns thumbnail filename.
     """
-    ffmpeg.input(path_video, ss="1").output(f"{upload_folder}/{file_filename}.jpg", vframes=1).run()
-
+    (
+        ffmpeg.input(path_video, ss="1")  # Take a screenshot at 1 second.
+        .output(f"{upload_folder}/{file_filename}.jpg", vframes=1)  # Output to file.
+        .overwrite_output()  # Overwrite output.
+        .run()  # Run.
+    )
+    # Return URL for thumbnail.
     return f"{domain}/{file_filename}.jpg"
