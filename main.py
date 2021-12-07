@@ -81,6 +81,8 @@ async def main():
 <title>discord-nice-embed</title>
 </head>
 <body>
+<a href="/docs">Swagger UI - API documentation</a>
+<a href="/redoc">ReDoc - Alternative API documentation</a>
 <form action="/uploadfiles/" enctype="multipart/form-data" method="post">
 <input name="file" type="file">
 <input type="submit">
