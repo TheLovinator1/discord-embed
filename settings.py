@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 
 class Settings:
     description = (
-        "Discord will only create embeds for videos and images if they are smaller than 8mb. We can 'abuse' this"
-        " by using the 'twitter:image' HTML meta tag."
+        "Discord will only create embeds for videos and images if they are smaller than 8 mb. We can 'abuse' this"
+        " by creating a .html that contains the 'twitter:player' HTML meta tag linking to the video."
     )
     # Load environment variables
     load_dotenv()

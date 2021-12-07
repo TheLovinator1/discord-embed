@@ -1,9 +1,12 @@
-"""Website for uploading files and creating .HTMLs and thumbnails so we can embed files in Discord.
+"""Website for uploading files, creating .HTMLs, and thumbnails.
+
+This was created for Discord. You can use this to embed videos in Discord.
 """
 
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Dict
 
 import ffmpeg
 from fastapi import FastAPI, File, UploadFile
@@ -28,40 +31,44 @@ app = FastAPI(
 
 
 @app.post("/uploadfiles/")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     """Page for uploading files.
 
     Args:
         file (UploadFile): Our uploaded file. Defaults to File(...).
 
     Returns:
-        HTMLResponse: Returns HTML for site.
+        Dict[str, str]: Returns a dict with the filename or a link to the .html if it was a video.
     """
     # TODO: Add syntax highlighting for text.
+    try:
+        # Make custom html for video files.
+        if file.content_type.startswith("video/"):
+            # Create folder if it doesn't exist.
+            Path(f"{Settings.upload_folder}/video").mkdir(parents=True, exist_ok=True)
 
-    # Make custom html for video files.
-    if file.content_type.startswith("video/"):
-        # Create folder if it doesn't exist.
-        Path(f"{Settings.upload_folder}/video").mkdir(parents=True, exist_ok=True)
+            # Save file to disk.
+            with open(f"{Settings.upload_folder}/video/{file.filename}", "wb+") as file_object:
+                file_object.write(file.file.read())
+
+            file_url = f"{Settings.domain}/video/{file.filename}"
+            file_location = f"{Settings.upload_folder}/video/{file.filename}"
+            height, width = find_video_resolution(file_location)
+            screenshot_url = make_thumbnail_from_video(file_location, file.filename)
+            html_url = generate_html(
+                filename=file.filename, url=file_url, width=width, height=height, screenshot=screenshot_url
+            )
+            return {"html_url": f"{html_url}"}
 
         # Save file to disk.
-        with open(f"{Settings.upload_folder}/video/{file.filename}", "wb+") as file_object:
+        with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
             file_object.write(file.file.read())
 
-        file_url = f"{Settings.domain}/video/{file.filename}"
-        file_location = f"{Settings.upload_folder}/video/{file.filename}"
-        height, width = find_video_resolution(file_location)
-        screenshot_url = make_thumbnail_from_video(file_location, file.filename)
-        html_url = generate_html(
-            filename=file.filename, url=file_url, width=width, height=height, screenshot=screenshot_url
-        )
-        return {"html_url": f"{html_url}"}
-
-    # Save file to disk.
-    with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
-        file_object.write(file.file.read())
-
-    return {"html_url": f"{Settings.domain}/{file.filename}"}
+        return {"html_url": f"{Settings.domain}/{file.filename}"}
+    except Exception as e:
+        # TODO: Change response code to 400.
+        print(e)
+        return {"error": f"Something went wrong: {e}"}
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -104,9 +111,9 @@ def generate_html(url: str, width: int, height: int, screenshot: str, filename: 
 
 
     Args:
-        url (str): URL for video.
-        width (int): Video width.
-        height (int): Video height.
+        url (str): URL for the video. This is accessible from the browser.
+        width (int): This is the width of the video.
+        height (int): This is the height of the video.
         screenshot (str): URL for screenshot. This is what you will see in Discord.
         filename (str): Original video filename. We will append .html to the filename.
 
