@@ -31,3 +31,9 @@ class Settings:
     # We check if the upload folder ends with a forward slash. If it does, we remove it.
     if upload_folder.endswith("/"):
         upload_folder = upload_folder[:-1]
+
+    # Discord webhook URL
+    try:
+        webhook_url = os.environ["WEBHOOK_URL"]
+    except KeyError:
+        sys.exit("discord-embed: Environment variable 'WEBHOOK_URL' is missing!")

@@ -9,11 +9,13 @@ from pathlib import Path
 from typing import Dict
 
 import ffmpeg
+from dhooks import Webhook
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
 
 from settings import Settings
 
+hook = Webhook(Settings.webhook_url)
 app = FastAPI(
     title="discord-nice-embed",
     description=Settings.description,
@@ -33,6 +35,15 @@ app = FastAPI(
 @app.post("/uploadfiles/")
 async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     """Page for uploading files.
+
+    It starts by checking if the file is a video.
+    Then it checks if the directory exists, if not it creates it.
+    Then it saves the file to the /video folder.
+    Then it finds the resolution of the video and creates a thumbnail.
+    Then it generates a HTML file for the video. This is what you will send to Discord.
+    Finally it returns a URL for the HTML file to the user.
+
+    If something goes wrong, we will send a message to Discord.
 
     Args:
         file (UploadFile): Our uploaded file. Defaults to File(...).
@@ -64,10 +75,11 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
         with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
             file_object.write(file.file.read())
 
+        hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
         return {"html_url": f"{Settings.domain}/{file.filename}"}
     except Exception as e:
         # TODO: Change response code to 400.
-        print(e)
+        hook.send(f"Something went wrong for {Settings.domain}/{file.filename}:\n{e}")
         return {"error": f"Something went wrong: {e}"}
 
 
