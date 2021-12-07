@@ -1,23 +1,19 @@
 """Website for uploading files and creating .HTMLs and thumbnails so we can embed files in Discord.
 """
-import os
+
 import sys
 from datetime import datetime
 from pathlib import Path
 
 import ffmpeg
-from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
 
-load_dotenv()
+from settings import Settings
 
 app = FastAPI(
     title="discord-nice-embed",
-    description="""
-Discord will only create embeds for videos and images if they are smaller than
- 8mb. We can "abuse" this by using the "twitter:image" HTML meta tag.
-""",
+    description=Settings.description,
     version="0.0.1",
     contact={
         "name": "Joakim Hellsén",
@@ -29,26 +25,6 @@ Discord will only create embeds for videos and images if they are smaller than
         "url": "https://www.gnu.org/licenses/gpl-3.0.txt",
     },
 )
-
-# Check if user has added a domain to the environment.
-try:
-    domain = os.environ["DOMAIN"]
-except KeyError:
-    sys.exit("discord-embed: Environment variable 'DOMAIN' is missing!")
-
-# We check if the domain ends with a forward slash. If it does, we remove it.
-if domain.endswith("/"):
-    domain = domain[:-1]
-
-# Check if we have a folder for uploads.
-try:
-    upload_folder = os.environ["UPLOAD_FOLDER"]
-except KeyError:
-    sys.exit("discord-embed: Environment variable 'UPLOAD_FOLDER' is missing!")
-
-# We check if the upload folder ends with a forward slash. If it does, we remove it.
-if upload_folder.endswith("/"):
-    upload_folder = upload_folder[:-1]
 
 
 @app.post("/uploadfiles/")
@@ -66,14 +42,14 @@ async def upload_file(file: UploadFile = File(...)):
     # Make custom html for video files.
     if file.content_type.startswith("video/"):
         # Create folder if it doesn't exist.
-        Path(f"{upload_folder}/video").mkdir(parents=True, exist_ok=True)
+        Path(f"{Settings.upload_folder}/video").mkdir(parents=True, exist_ok=True)
 
         # Save file to disk.
-        with open(f"{upload_folder}/video/{file.filename}", "wb+") as file_object:
+        with open(f"{Settings.upload_folder}/video/{file.filename}", "wb+") as file_object:
             file_object.write(file.file.read())
 
-        file_url = f"{domain}/video/{file.filename}"
-        file_location = f"{upload_folder}/video/{file.filename}"
+        file_url = f"{Settings.domain}/video/{file.filename}"
+        file_location = f"{Settings.upload_folder}/video/{file.filename}"
         height, width = find_video_resolution(file_location)
         screenshot_url = make_thumbnail_from_video(file_location, file.filename)
         html_url = generate_html(
@@ -82,10 +58,10 @@ async def upload_file(file: UploadFile = File(...)):
         return {"html_url": f"{html_url}"}
 
     # Save file to disk.
-    with open(f"{upload_folder}/{file.filename}", "wb+") as file_object:
+    with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
         file_object.write(file.file.read())
 
-    return {"html_url": f"{domain}/{file.filename}"}
+    return {"html_url": f"{Settings.domain}/{file.filename}"}
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -150,12 +126,12 @@ def generate_html(url: str, width: int, height: int, screenshot: str, filename: 
     </head>
     </html>
     """
-    html_url = f"{domain}/{filename}"
+    html_url = f"{Settings.domain}/{filename}"
 
     # Take the filename and append .html to it.
     filename += ".html"
 
-    with open(f"{upload_folder}/{filename}", "w", encoding="utf-8") as file:
+    with open(f"{Settings.upload_folder}/{filename}", "w", encoding="utf-8") as file:
         file.write(video_html)
 
     return html_url
@@ -197,9 +173,9 @@ def make_thumbnail_from_video(path_video: str, file_filename: str) -> str:
     """
     (
         ffmpeg.input(path_video, ss="1")  # Take a screenshot at 1 second.
-        .output(f"{upload_folder}/{file_filename}.jpg", vframes=1)  # Output to file.
+        .output(f"{Settings.upload_folder}/{file_filename}.jpg", vframes=1)  # Output to file.
         .overwrite_output()  # Overwrite output.
         .run()  # Run.
     )
     # Return URL for thumbnail.
-    return f"{domain}/{file_filename}.jpg"
+    return f"{Settings.domain}/{file_filename}.jpg"
