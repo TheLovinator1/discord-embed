@@ -32,51 +32,71 @@ app = FastAPI(
 )
 
 
+def normal_file_uploaded(file: UploadFile) -> Dict[str, str]:
+    """Save file to disk and return URL.
+
+    Args:
+        file (UploadFile): Our file object.
+
+    Returns:
+        Dict[str, str]: Returns URL for file.
+    """
+    # Save file to disk.
+    with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
+        file_object.write(file.file.read())
+
+    hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
+    return {"html_url": f"{Settings.domain}/{file.filename}"}
+
+
+def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
+    """Save video to disk, generate HTML, thumbnail, and return the .HTML file instead of the file.
+
+    Args:
+        file (UploadFile): Our file object.
+
+    Returns:
+        Dict[str, str]: Returns URL for video.
+    """
+    # Make custom html for video files.
+
+    # Create folder if it doesn't exist.
+    Path(f"{Settings.upload_folder}/video").mkdir(parents=True, exist_ok=True)
+
+    # Save file to disk.
+    with open(f"{Settings.upload_folder}/video/{file.filename}", "wb+") as file_object:
+        file_object.write(file.file.read())
+
+    file_url = f"{Settings.domain}/video/{file.filename}"
+    file_location = f"{Settings.upload_folder}/video/{file.filename}"
+    height, width = find_video_resolution(file_location)
+    screenshot_url = make_thumbnail_from_video(file_location, file.filename)
+    html_url = generate_html(
+        filename=file.filename, url=file_url, width=width, height=height, screenshot=screenshot_url
+    )
+    hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
+    return {"html_url": f"{html_url}"}
+
+
 @app.post("/uploadfiles/")
 async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     """Page for uploading files.
 
-    It starts by checking if the file is a video.
-    Then it checks if the directory exists, if not it creates it.
-    Then it saves the file to the /video folder.
-    Then it finds the resolution of the video and creates a thumbnail.
-    Then it generates a HTML file for the video. This is what you will send to Discord.
-    Finally it returns a URL for the HTML file to the user.
-
+    If it is a video, we need to make a HTML file, and a thumbnail otherwise we can just save
+     the file and return the URL for it.
     If something goes wrong, we will send a message to Discord.
 
     Args:
-        file (UploadFile): Our uploaded file. Defaults to File(...).
+        file (UploadFile): Our uploaded file.
 
     Returns:
         Dict[str, str]: Returns a dict with the filename or a link to the .html if it was a video.
     """
     # TODO: Add syntax highlighting for text.
     try:
-        # Make custom html for video files.
         if file.content_type.startswith("video/"):
-            # Create folder if it doesn't exist.
-            Path(f"{Settings.upload_folder}/video").mkdir(parents=True, exist_ok=True)
-
-            # Save file to disk.
-            with open(f"{Settings.upload_folder}/video/{file.filename}", "wb+") as file_object:
-                file_object.write(file.file.read())
-
-            file_url = f"{Settings.domain}/video/{file.filename}"
-            file_location = f"{Settings.upload_folder}/video/{file.filename}"
-            height, width = find_video_resolution(file_location)
-            screenshot_url = make_thumbnail_from_video(file_location, file.filename)
-            html_url = generate_html(
-                filename=file.filename, url=file_url, width=width, height=height, screenshot=screenshot_url
-            )
-            return {"html_url": f"{html_url}"}
-
-        # Save file to disk.
-        with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
-            file_object.write(file.file.read())
-
-        hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
-        return {"html_url": f"{Settings.domain}/{file.filename}"}
+            return video_file_uploaded(file)
+        return normal_file_uploaded(file)
     except Exception as e:
         # TODO: Change response code to 400.
         hook.send(f"Something went wrong for {Settings.domain}/{file.filename}:\n{e}")
