@@ -12,6 +12,9 @@ import ffmpeg
 from dhooks import Webhook
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import guess_lexer
 
 from settings import Settings
 
@@ -71,10 +74,49 @@ def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
     file_location = f"{Settings.upload_folder}/video/{file.filename}"
     height, width = find_video_resolution(file_location)
     screenshot_url = make_thumbnail_from_video(file_location, file.filename)
-    html_url = generate_html(
+    html_url = generate_html_for_videos(
         filename=file.filename, url=file_url, width=width, height=height, screenshot=screenshot_url
     )
     hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
+    return {"html_url": f"{html_url}"}
+
+
+def text_file_uploaded(file: UploadFile) -> Dict[str, str]:
+    """Save file to disk and return URL.
+
+    Args:
+        file (UploadFile): Our file object.
+
+    Returns:
+        Dict[str, str]: Returns URL for file.
+    """
+    # Create folder if it doesn't exist.
+    Path(f"{Settings.upload_folder}/text").mkdir(parents=True, exist_ok=True)
+
+    save_location = f"{Settings.upload_folder}/text/{file.filename}"
+    # Save file to disk.
+    with open(save_location, "wb+") as file_object:
+        file_object.write(file.file.read())
+
+    with open(save_location, encoding="utf-8") as file_object:
+        lines = file_object.read()
+        colored_text = highlight(
+            lines,
+            guess_lexer(lines),  # Guess
+            HtmlFormatter(
+                style="fruity",  # Dark style
+                linenos="table",  # Output line numbers as a table w/ two cells, one with line numbers, other with code
+                full=True,  # Use inline styles instead of CSS classes.
+                filename=f"{file.filename}",
+            ),
+        )
+
+    with open(f"{Settings.upload_folder}/{file.filename}.html", "w", encoding="utf-8") as file_object:
+        file_object.write(colored_text)
+
+    html_url = f"{Settings.domain}/{file.filename}.html"
+
+    hook.send(f"{html_url} was uploaded.")
     return {"html_url": f"{html_url}"}
 
 
@@ -92,11 +134,23 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     Returns:
         Dict[str, str]: Returns a dict with the filename or a link to the .html if it was a video.
     """
-    # TODO: Add syntax highlighting for text.
     try:
         if file.content_type.startswith("video/"):
             return video_file_uploaded(file)
-        return normal_file_uploaded(file)
+        if (
+            # TODO: This needs to be better and include more things.
+            file.content_type.startswith("text/")
+            or file.content_type.startswith("application/json")
+            or file.content_type.startswith("application/x-sh")
+            or file.content_type.startswith("application/xml")
+        ):
+            return text_file_uploaded(file)
+
+        with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
+            file_object.write(file.file.read())
+
+        hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
+        return {"html_url": f"{Settings.domain}/{file.filename}"}
     except Exception as e:
         # TODO: Change response code to 400.
         hook.send(f"Something went wrong for {Settings.domain}/{file.filename}:\n{e}")
@@ -131,7 +185,7 @@ async def main():
 """
 
 
-def generate_html(url: str, width: int, height: int, screenshot: str, filename: str) -> str:
+def generate_html_for_videos(url: str, width: int, height: int, screenshot: str, filename: str) -> str:
     """Generate HTML for video files.
 
     This is what we will send to other people on Discord.
