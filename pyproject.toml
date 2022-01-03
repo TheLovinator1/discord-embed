@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "discord-nice-embed-maker"
+name = "discord-embed"
 version = "0.1.0"
 description = "Make nice embeds for Discord"
 authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
