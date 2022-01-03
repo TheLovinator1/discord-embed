@@ -1,8 +1,3 @@
-"""Website for uploading files, creating .HTMLs, and thumbnails.
-
-This was created for Discord. You can use this to embed videos in Discord.
-"""
-
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -16,7 +11,7 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import guess_lexer
 
-from settings import Settings
+from discord_embed.settings import Settings
 
 hook = Webhook(Settings.webhook_url)
 app = FastAPI(
@@ -61,8 +56,6 @@ def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
     Returns:
         Dict[str, str]: Returns URL for video.
     """
-    # Make custom html for video files.
-
     # Create folder if it doesn't exist.
     Path(f"{Settings.upload_folder}/video").mkdir(parents=True, exist_ok=True)
 
@@ -102,7 +95,7 @@ def text_file_uploaded(file: UploadFile) -> Dict[str, str]:
         lines = file_object.read()
         colored_text = highlight(
             lines,
-            guess_lexer(lines),  # Guess
+            guess_lexer(lines),
             HtmlFormatter(
                 style="fruity",  # Dark style
                 linenos="table",  # Output line numbers as a table w/ two cells, one with line numbers, other with code
