@@ -40,4 +40,6 @@ class Settings:
     try:
         webhook_url = os.environ["WEBHOOK_URL"]
     except KeyError:
-        sys.exit("discord-embed: Environment variable 'WEBHOOK_URL' is missing!")
+        sys.exit(
+            "Environment variable 'WEBHOOK_URL' is missing! You may have to restart your terminal or IDE to set it."
+        )
