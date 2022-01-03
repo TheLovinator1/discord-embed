@@ -1,4 +1,5 @@
 import os
+import pathlib
 import sys
 
 from dotenv import load_dotenv
@@ -27,6 +28,9 @@ class Settings:
         upload_folder = os.environ["UPLOAD_FOLDER"]
     except KeyError:
         sys.exit("discord-embed: Environment variable 'UPLOAD_FOLDER' is missing!")
+
+    # Create upload_folder if it doesn't exist.
+    pathlib.Path(upload_folder).mkdir(parents=True, exist_ok=True)
 
     # We check if the upload folder ends with a forward slash. If it does, we remove it.
     if upload_folder.endswith("/"):
