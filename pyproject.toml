@@ -11,13 +11,13 @@ keywords = ["website", "discord"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = { extras = ["all"], version = "^0.70.0" }
+fastapi = {extras = ["all"], version = "^0.72.0"}
 ffmpeg-python = "^0.2.0"
 gunicorn = "^20.1.0"
 uvicorn = "^0.15.0"
 python-dotenv = "^0.19.2"
 dhooks = {git = "https://github.com/kyb3r/dhooks.git"}
-Pygments = "^2.10.0"
+Pygments = "^2.11.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
