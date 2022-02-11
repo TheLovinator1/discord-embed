@@ -11,7 +11,7 @@ keywords = ["website", "discord"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = {extras = ["all"], version = "^0.72.0"}
+fastapi = {extras = ["all"], version = "^0.73.0"}
 ffmpeg-python = "^0.2.0"
 gunicorn = "^20.1.0"
 uvicorn = "^0.15.0"
@@ -20,11 +20,11 @@ dhooks = {git = "https://github.com/kyb3r/dhooks.git"}
 Pygments = "^2.11.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
-black = { version = "^21.9b0", allow-prereleases = true }
-mypy = "^0.910"
-prospector = "^1.5.1"
-bandit = "^1.7.0"
+pytest = "^7.0.1"
+black = "^22.1.0"
+mypy = "^0.931"
+prospector = "^1.6.0"
+bandit = "^1.7.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
