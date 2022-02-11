@@ -20,7 +20,7 @@ dhooks = {git = "https://github.com/kyb3r/dhooks.git"}
 Pygments = "^2.11.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7.0"
 black = { version = "^21.9b0", allow-prereleases = true }
 mypy = "^0.910"
 prospector = "^1.5.1"
