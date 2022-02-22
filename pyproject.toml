@@ -11,7 +11,7 @@ keywords = ["website", "discord"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = {extras = ["all"], version = "^0.74.0"}
+fastapi = {extras = ["all"], version = "^0.74.1"}
 ffmpeg-python = "^0.2.0"
 gunicorn = "^20.1.0"
 uvicorn = "^0.15.0"
