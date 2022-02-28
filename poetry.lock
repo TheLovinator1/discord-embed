@@ -559,7 +559,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "prospector"
-version = "1.6.0"
+version = "1.7.2"
 description = ""
 category = "dev"
 optional = false
@@ -571,7 +571,7 @@ mccabe = ">=0.6.0,<0.7.0"
 pep8-naming = ">=0.3.3,<=0.10.0"
 pycodestyle = ">=2.6.0,<2.9.0"
 pydocstyle = ">=2.0.0"
-pyflakes = ">=2.2.0,<2.4.0"
+pyflakes = ">=2.2.0,<3"
 pylint = ">=2.8.3"
 pylint-celery = "0.3"
 pylint-django = ">=2.5,<2.6"
@@ -998,7 +998,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "ea53eb8be6ed68c404151797b5b35f0cb5413b9575e63b9eda16499595ac800f"
+content-hash = "462b126556be171ba09110e31114d38c8a0c3d7347c353208e40168d10df22ef"
 
 [metadata.files]
 aiohttp = [
@@ -1550,8 +1550,8 @@ pluggy = [
     {file = "pluggy-1.0.0.tar.gz", hash = "sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159"},
 ]
 prospector = [
-    {file = "prospector-1.6.0-py3-none-any.whl", hash = "sha256:fd5a2872b26ee07babc15b826c1ff4a717282a3dbb744591a59625a2c11a0468"},
-    {file = "prospector-1.6.0.tar.gz", hash = "sha256:1ca0da95a2d1a151ae578f02d6fc78300a9150af8f2c2c201097213016cc92ee"},
+    {file = "prospector-1.7.2-py3-none-any.whl", hash = "sha256:fc92146f1dedce94c058144c30fbc0f7262ac8cba1722a3309dd3c6d59054aab"},
+    {file = "prospector-1.7.2.tar.gz", hash = "sha256:c1a440ac56c7d840b918962a0fd3766047482d553b31dc2774cae8db8544060d"},
 ]
 py = [
     {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
