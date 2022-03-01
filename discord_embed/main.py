@@ -1,3 +1,4 @@
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -40,15 +41,16 @@ def normal_file_uploaded(file: UploadFile) -> Dict[str, str]:
         Dict[str, str]: Returns URL for file.
     """
     # Save file to disk.
-    with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
-        file_object.write(file.file.read())
+    folder_filename = os.path.join(Settings.upload_folder, file.filename)
+    with open(folder_filename, "wb+") as f:
+        f.write(file.file.read())
 
     hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
     return {"html_url": f"{Settings.domain}/{file.filename}"}
 
 
 def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
-    """Save video to disk, generate HTML, thumbnail, and return the .HTML file instead of the file.
+    """Save video to disk, generate HTML, thumbnail, and return a .html URL.
 
     Args:
         file (UploadFile): Our file object.
@@ -57,18 +59,23 @@ def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
         Dict[str, str]: Returns URL for video.
     """
     # Create folder if it doesn't exist.
-    Path(f"{Settings.upload_folder}/video").mkdir(parents=True, exist_ok=True)
+    folder_video = os.path.join(Settings.upload_folder, "video")
+    Path(folder_video).mkdir(parents=True, exist_ok=True)
 
     # Save file to disk.
-    with open(f"{Settings.upload_folder}/video/{file.filename}", "wb+") as file_object:
-        file_object.write(file.file.read())
+    file_location = os.path.join(folder_video, file.filename)
+    with open(file_location, "wb+") as f:
+        f.write(file.file.read())
 
     file_url = f"{Settings.domain}/video/{file.filename}"
-    file_location = f"{Settings.upload_folder}/video/{file.filename}"
     height, width = find_video_resolution(file_location)
     screenshot_url = make_thumbnail_from_video(file_location, file.filename)
     html_url = generate_html_for_videos(
-        filename=file.filename, url=file_url, width=width, height=height, screenshot=screenshot_url
+        url=file_url,
+        width=width,
+        height=height,
+        screenshot=screenshot_url,
+        filename=file.filename,
     )
     hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
     return {"html_url": f"{html_url}"}
@@ -84,28 +91,29 @@ def text_file_uploaded(file: UploadFile) -> Dict[str, str]:
         Dict[str, str]: Returns URL for file.
     """
     # Create folder if it doesn't exist.
-    Path(f"{Settings.upload_folder}/text").mkdir(parents=True, exist_ok=True)
+    text_location = os.path.join(Settings.upload_folder, "text")
+    Path(text_location).mkdir(parents=True, exist_ok=True)
 
-    save_location = f"{Settings.upload_folder}/text/{file.filename}"
+    save_location = os.path.join(text_location, file.filename)
     # Save file to disk.
-    with open(save_location, "wb+") as file_object:
-        file_object.write(file.file.read())
+    with open(save_location, "wb+", encoding="utf-8") as f:
+        f.write(file.file.read())
 
-    with open(save_location, encoding="utf-8") as file_object:
-        lines = file_object.read()
+    with open(save_location, encoding="utf-8") as f:
+        lines = f.read()
         colored_text = highlight(
             lines,
             guess_lexer(lines),
             HtmlFormatter(
                 style="fruity",  # Dark style
-                linenos="table",  # Output line numbers as a table w/ two cells, one with line numbers, other with code
+                linenos="table",  # Output line numbers
                 full=True,  # Use inline styles instead of CSS classes.
-                filename=f"{file.filename}",
+                filename=file.filename,
             ),
         )
-
-    with open(f"{Settings.upload_folder}/{file.filename}.html", "w", encoding="utf-8") as file_object:
-        file_object.write(colored_text)
+    html_color = os.path.join(Settings.upload_folder, f"{file.filename}.html")
+    with open(html_color, "w", encoding="utf-8") as f:
+        f.write(colored_text)
 
     html_url = f"{Settings.domain}/{file.filename}.html"
 
@@ -117,15 +125,16 @@ def text_file_uploaded(file: UploadFile) -> Dict[str, str]:
 async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     """Page for uploading files.
 
-    If it is a video, we need to make a HTML file, and a thumbnail otherwise we can just save
-     the file and return the URL for it.
+    If it is a video, we need to make a HTML file, and a thumbnail
+    otherwise we can just save the file and return the URL for it.
     If something goes wrong, we will send a message to Discord.
 
     Args:
         file (UploadFile): Our uploaded file.
 
     Returns:
-        Dict[str, str]: Returns a dict with the filename or a link to the .html if it was a video.
+        Dict[str, str]: Returns a dict with the filename or a link to
+        the .html if it was a video.
     """
     try:
         if file.content_type.startswith("video/"):
@@ -139,14 +148,14 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
         ):
             return text_file_uploaded(file)
 
-        with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file_object:
-            file_object.write(file.file.read())
-
-        hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
-        return {"html_url": f"{Settings.domain}/{file.filename}"}
+        with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as f:
+            f.write(file.file.read())
+        domain_url = f"{Settings.domain}/{file.filename}"
+        hook.send(f"{domain_url} was uploaded.")
+        return {"html_url": domain_url}
     except Exception as e:
         # TODO: Change response code to 400.
-        hook.send(f"Something went wrong for {Settings.domain}/{file.filename}:\n{e}")
+        hook.send(f"Something went wrong for {domain_url}:\n{e}")
         return {"error": f"Something went wrong: {e}"}
 
 
@@ -178,7 +187,7 @@ async def main():
 """
 
 
-def generate_html_for_videos(url: str, width: int, height: int, screenshot: str, filename: str) -> str:
+def generate_html_for_videos(url: str, width: int, height: int, screenshot: str, filename: str) -> str:  # noqa: E501
     """Generate HTML for video files.
 
     This is what we will send to other people on Discord.
@@ -193,8 +202,8 @@ def generate_html_for_videos(url: str, width: int, height: int, screenshot: str,
         url (str): URL for the video. This is accessible from the browser.
         width (int): This is the width of the video.
         height (int): This is the height of the video.
-        screenshot (str): URL for screenshot. This is what you will see in Discord.
-        filename (str): Original video filename. We will append .html to the filename.
+        screenshot (str): URL for screenshot.
+        filename (str): Original video filename.
 
     Returns:
         str: [description]
@@ -214,13 +223,14 @@ def generate_html_for_videos(url: str, width: int, height: int, screenshot: str,
     </head>
     </html>
     """
-    html_url = f"{Settings.domain}/{filename}"
+    html_url = os.path.join(Settings.domain, filename)
 
     # Take the filename and append .html to it.
     filename += ".html"
 
-    with open(f"{Settings.upload_folder}/{filename}", "w", encoding="utf-8") as file:
-        file.write(video_html)
+    file_path = os.path.join(Settings.upload_folder, filename)
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(video_html)
 
     return html_url
 
@@ -235,10 +245,7 @@ def find_video_resolution(path_to_video: str) -> tuple[int, int]:
         tuple[int, int]: Returns height and width.
     """
     probe = ffmpeg.probe(path_to_video)
-    video_stream = next(
-        (stream for stream in probe["streams"] if stream["codec_type"] == "video"),
-        None,
-    )
+    video_stream = next((stream for stream in probe["streams"] if stream["codec_type"] == "video"), None)  # noqa: E501
     if video_stream is None:
         print("No video stream found", file=sys.stderr)
         sys.exit(1)
@@ -260,10 +267,10 @@ def make_thumbnail_from_video(path_video: str, file_filename: str) -> str:
         str: Returns thumbnail filename.
     """
     (
-        ffmpeg.input(path_video, ss="1")  # Take a screenshot at 1 second.
-        .output(f"{Settings.upload_folder}/{file_filename}.jpg", vframes=1)  # Output to file.
-        .overwrite_output()  # Overwrite output.
-        .run()  # Run.
+        ffmpeg.input(path_video, ss="1")
+        .output(f"{Settings.upload_folder}/{file_filename}.jpg", vframes=1)
+        .overwrite_output()
+        .run()
     )
     # Return URL for thumbnail.
     return f"{Settings.domain}/{file_filename}.jpg"
