@@ -2,7 +2,7 @@
 # don't need them when run the application so we can selectively copy artifacts
 # from this stage (compile-image) to second one (runtime-image), leaving 
 # behind everything we don't need in the final build. 
-FROM python:3.9-slim as requirements-stage
+FROM python:3.10-slim as requirements-stage
 
 WORKDIR /tmp
 
@@ -12,7 +12,7 @@ COPY ./pyproject.toml ./poetry.lock /tmp/
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # TODO: Remove this
 # We don't want apt-get to interact with us,
