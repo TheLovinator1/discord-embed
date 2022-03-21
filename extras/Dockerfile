@@ -42,7 +42,7 @@ COPY --from=requirements-stage /tmp/requirements.txt /home/botuser/requirements.
 
 RUN pip install --no-cache-dir --upgrade -r /home/botuser/requirements.txt
 
-COPY main.py ./
+COPY discord_embed/main.py discord_embed/settings.py ./
 
 # Don't generate byte code (.pyc-files). 
 # These are only needed if we run the python-files several times.
