@@ -3,7 +3,6 @@ services:
   discord-embed:
     image: thelovinator/discord-nice-embed-maker-for-my-yoy
     container_name: discord-embed
-    build: .
     env_file:
       - .env
     environment:
