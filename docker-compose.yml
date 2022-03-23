@@ -1,8 +1,9 @@
 version: "3"
 services:
-  discord-nice-embed-maker-for-my-yoy:
+  discord-embed:
     image: thelovinator/discord-nice-embed-maker-for-my-yoy
-    container_name: discord-nice-embed-maker-for-my-yoy
+    container_name: discord-embed
+    build: .
     env_file:
       - .env
     environment:
@@ -10,7 +11,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - uploads:/home/botuser/Uploads
+      - uploads:/Uploads
     restart: unless-stopped
 volumes:
   uploads:
