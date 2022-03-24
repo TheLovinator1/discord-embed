@@ -24,7 +24,7 @@ RUN \
 mkdir -p /var/log/discord-embed/ && chown -R botuser:botuser /var/log/discord-embed/ && \
 mkdir /Uploads && chown -R botuser:botuser /Uploads
 
-VOLUME ["/var/log/discord-embed/", "/Uploads"]
+VOLUME ["/Uploads"]
 
 # Change to the user we created.
 USER botuser
