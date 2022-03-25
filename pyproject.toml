@@ -16,7 +16,7 @@ ffmpeg-python = "^0.2.0"
 dhooks = { git = "https://github.com/kyb3r/dhooks.git" }
 Pygments = "^2.11.2"
 python-multipart = "^0.0.5"
-python-dotenv = "^0.19.2"
+python-dotenv = "^0.20.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
