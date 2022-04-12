@@ -136,7 +136,6 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
         hook.send(f"{domain_url} was uploaded.")
         return {"html_url": domain_url}
     except Exception as e:
-        # TODO: Change response code to 400.
         hook.send(f"Something went wrong for {domain_url}:\n{e}")
         return {"error": f"Something went wrong: {e}"}
 
@@ -169,7 +168,13 @@ async def main():
 """
 
 
-def generate_html_for_videos(url: str, width: int, height: int, screenshot: str, filename: str) -> str:
+def generate_html_for_videos(
+    url: str,
+    width: int,
+    height: int,
+    screenshot: str,
+    filename: str,
+) -> str:
     """Generate HTML for video files.
 
     This is what we will send to other people on Discord.
