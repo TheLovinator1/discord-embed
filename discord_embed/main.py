@@ -31,24 +31,6 @@ app = FastAPI(
 )
 
 
-def normal_file_uploaded(file: UploadFile) -> Dict[str, str]:
-    """Save file to disk and return URL.
-
-    Args:
-        file (UploadFile): Our file object.
-
-    Returns:
-        Dict[str, str]: Returns URL for file.
-    """
-    # Save file to disk.
-    folder_filename = os.path.join(Settings.upload_folder, file.filename)
-    with open(folder_filename, "wb+") as file:
-        file.write(file.file.read())
-
-    hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
-    return {"html_url": f"{Settings.domain}/{file.filename}"}
-
-
 async def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
     """Save video to disk, generate HTML, thumbnail, and return a .html URL.
 
