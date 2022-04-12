@@ -1,4 +1,3 @@
-version: "3"
 services:
   discord-embed:
     image: thelovinator/discord-nice-embed-maker-for-my-yoy
