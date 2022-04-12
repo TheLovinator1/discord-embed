@@ -11,10 +11,9 @@ keywords = ["website", "discord"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.75.0"
+fastapi = "^0.75.1"
 ffmpeg-python = "^0.2.0"
-dhooks = { git = "https://github.com/kyb3r/dhooks.git" }
-Pygments = "^2.11.2"
+discord-webhook = "^0.15.0"
 python-multipart = "^0.0.5"
 python-dotenv = "^0.20.0"
 

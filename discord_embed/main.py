@@ -5,13 +5,12 @@ from pathlib import Path
 from typing import Dict
 
 import ffmpeg
-from dhooks import Webhook
+from discord_webhook import DiscordWebhook
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
 
 from discord_embed.settings import Settings
 
-hook = Webhook(Settings.webhook_url)
 app = FastAPI(
     title="discord-nice-embed",
     description=Settings.description,
@@ -26,6 +25,20 @@ app = FastAPI(
         "url": "https://www.gnu.org/licenses/gpl-3.0.txt",
     },
 )
+
+
+async def send_webhook(message: str) -> None:
+    """Send webhook to Discord.
+
+    Args:
+        message (str): The message to send.
+    """
+    webhook = DiscordWebhook(
+        url=Settings.webhook_url,
+        content=message,
+        rate_limit_retry=True,
+    )
+    await webhook.execute()
 
 
 async def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
@@ -59,7 +72,7 @@ async def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
         screenshot=screenshot_url,
         filename=filename,
     )
-    hook.send(f"{Settings.domain}/{filename} was uploaded.")
+    await send_webhook(f"{Settings.domain}/{filename} was uploaded.")
     return {"html_url": f"{html_url}"}
 
 
@@ -85,11 +98,11 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
         with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file:
             await file.write(file.file.read())
         domain_url = f"{Settings.domain}/{file.filename}"
-        hook.send(f"{domain_url} was uploaded.")
+        await send_webhook(f"{domain_url} was uploaded.")
         return {"html_url": domain_url}
 
     except Exception as e:
-        hook.send(f"Something went wrong for {domain_url}:\n{e}")
+        await send_webhook(f"Something went wrong for {domain_url}:\n{e}")
         return {"error": f"Something went wrong: {e}"}
 
 
