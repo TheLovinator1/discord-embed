@@ -8,9 +8,6 @@ import ffmpeg
 from dhooks import Webhook
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
-from pygments import highlight
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import guess_lexer
 
 from discord_embed.settings import Settings
 
@@ -66,46 +63,6 @@ async def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
     return {"html_url": f"{html_url}"}
 
 
-async def text_file_uploaded(file: UploadFile) -> Dict[str, str]:
-    """Save file to disk and return URL.
-
-    Args:
-        file (UploadFile): Our file object.
-
-    Returns:
-        Dict[str, str]: Returns URL for file.
-    """
-    # Create folder if it doesn't exist.
-    text_location = os.path.join(Settings.upload_folder, "text")
-    Path(text_location).mkdir(parents=True, exist_ok=True)
-
-    save_location = os.path.join(text_location, file.filename)
-    # Save file to disk.
-    with open(save_location, "wb+", encoding="utf-8") as file:
-        await file.write(file.file.read())
-
-    with open(save_location, encoding="utf-8") as file:
-        lines = file.read()
-        colored_text = highlight(
-            lines,
-            guess_lexer(lines),
-            HtmlFormatter(
-                style="fruity",  # Dark style
-                linenos="table",  # Output line numbers
-                full=True,  # Use inline styles instead of CSS classes.
-                filename=file.filename,
-            ),
-        )
-    html_color = os.path.join(Settings.upload_folder, f"{file.filename}.html")
-    with open(html_color, "w", encoding="utf-8") as file:
-        await file.write(colored_text)
-
-    html_url = f"{Settings.domain}/{file.filename}.html"
-
-    hook.send(f"{html_url} was uploaded.")
-    return {"html_url": f"{html_url}"}
-
-
 @app.post("/uploadfiles/")
 async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     """Page for uploading files.
@@ -124,20 +81,13 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     try:
         if file.content_type.startswith("video/"):
             return video_file_uploaded(file)
-        if (
-            # TODO: This needs to be better and include more things.
-            file.content_type.startswith("text/")
-            or file.content_type.startswith("application/json")
-            or file.content_type.startswith("application/x-sh")
-            or file.content_type.startswith("application/xml")
-        ):
-            return text_file_uploaded(file)
 
         with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file:
             await file.write(file.file.read())
         domain_url = f"{Settings.domain}/{file.filename}"
         hook.send(f"{domain_url} was uploaded.")
         return {"html_url": domain_url}
+
     except Exception as e:
         hook.send(f"Something went wrong for {domain_url}:\n{e}")
         return {"error": f"Something went wrong: {e}"}
