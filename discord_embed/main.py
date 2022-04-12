@@ -42,8 +42,8 @@ def normal_file_uploaded(file: UploadFile) -> Dict[str, str]:
     """
     # Save file to disk.
     folder_filename = os.path.join(Settings.upload_folder, file.filename)
-    with open(folder_filename, "wb+") as f:
-        f.write(file.file.read())
+    with open(folder_filename, "wb+") as file:
+        file.write(file.file.read())
 
     hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
     return {"html_url": f"{Settings.domain}/{file.filename}"}
@@ -64,8 +64,8 @@ def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
 
     # Save file to disk.
     file_location = os.path.join(folder_video, file.filename)
-    with open(file_location, "wb+") as f:
-        f.write(file.file.read())
+    with open(file_location, "wb+") as file:
+        file.write(file.file.read())
 
     file_url = f"{Settings.domain}/video/{file.filename}"
     height, width = find_video_resolution(file_location)
@@ -96,11 +96,11 @@ def text_file_uploaded(file: UploadFile) -> Dict[str, str]:
 
     save_location = os.path.join(text_location, file.filename)
     # Save file to disk.
-    with open(save_location, "wb+", encoding="utf-8") as f:
-        f.write(file.file.read())
+    with open(save_location, "wb+", encoding="utf-8") as file:
+        file.write(file.file.read())
 
-    with open(save_location, encoding="utf-8") as f:
-        lines = f.read()
+    with open(save_location, encoding="utf-8") as file:
+        lines = file.read()
         colored_text = highlight(
             lines,
             guess_lexer(lines),
@@ -112,8 +112,8 @@ def text_file_uploaded(file: UploadFile) -> Dict[str, str]:
             ),
         )
     html_color = os.path.join(Settings.upload_folder, f"{file.filename}.html")
-    with open(html_color, "w", encoding="utf-8") as f:
-        f.write(colored_text)
+    with open(html_color, "w", encoding="utf-8") as file:
+        file.write(colored_text)
 
     html_url = f"{Settings.domain}/{file.filename}.html"
 
@@ -148,8 +148,8 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
         ):
             return text_file_uploaded(file)
 
-        with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as f:
-            f.write(file.file.read())
+        with open(f"{Settings.upload_folder}/{file.filename}", "wb+") as file:
+            file.write(file.file.read())
         domain_url = f"{Settings.domain}/{file.filename}"
         hook.send(f"{domain_url} was uploaded.")
         return {"html_url": domain_url}
@@ -229,8 +229,8 @@ def generate_html_for_videos(url: str, width: int, height: int, screenshot: str,
     filename += ".html"
 
     file_path = os.path.join(Settings.upload_folder, filename)
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(video_html)
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write(video_html)
 
     return html_url
 
