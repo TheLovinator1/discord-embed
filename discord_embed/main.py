@@ -44,22 +44,25 @@ async def video_file_uploaded(file: UploadFile) -> Dict[str, str]:
     folder_video = os.path.join(Settings.upload_folder, "video")
     Path(folder_video).mkdir(parents=True, exist_ok=True)
 
+    # Replace spaces with dots in filename.
+    filename = file.filename.replace(" ", ".")
+
     # Save file to disk.
-    file_location = os.path.join(folder_video, file.filename)
+    file_location = os.path.join(folder_video, filename)
     with open(file_location, "wb+") as file:
         await file.write(file.file.read())
 
-    file_url = f"{Settings.domain}/video/{file.filename}"
+    file_url = f"{Settings.domain}/video/{filename}"
     height, width = find_video_resolution(file_location)
-    screenshot_url = make_thumbnail_from_video(file_location, file.filename)
+    screenshot_url = make_thumbnail_from_video(file_location, filename)
     html_url = generate_html_for_videos(
         url=file_url,
         width=width,
         height=height,
         screenshot=screenshot_url,
-        filename=file.filename,
+        filename=filename,
     )
-    hook.send(f"{Settings.domain}/{file.filename} was uploaded.")
+    hook.send(f"{Settings.domain}/{filename} was uploaded.")
     return {"html_url": f"{html_url}"}
 
 
