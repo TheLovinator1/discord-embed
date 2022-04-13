@@ -14,7 +14,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Update packages and install needed packages to build our requirements.
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential gcc curl git ffmpeg python-is-python3
+RUN apt-get update && apt-get install -y --no-install-recommends curl ffmpeg python-is-python3
 
 # Create user so we don't run as root.
 RUN useradd --create-home botuser
