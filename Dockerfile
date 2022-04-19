@@ -42,8 +42,7 @@ ADD --chown=botuser:botuser pyproject.toml poetry.lock README.md LICENSE /home/b
 WORKDIR /home/botuser/discord-embed
 
 # Install the requirements.
-RUN poetry install --no-interaction --no-ansi --no-dev && \
-poetry add uvicorn[standard]
+RUN poetry install --no-interaction --no-ansi --no-dev
 
 # Add main.py and settings.py to the container.
 ADD --chown=botuser:botuser discord_embed /home/botuser/discord-embed/discord_embed/
