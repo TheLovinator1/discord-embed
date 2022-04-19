@@ -46,23 +46,18 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
         the .html if it was a video.
     """
     domain_url = ""
-    try:
-        if file.content_type.startswith("video/"):
-            return await do_things(file)
+    if file.content_type.startswith("video/"):
+        return await do_things(file)
 
-        # Replace spaces with dots in filename.
-        filename = file.filename.replace(" ", ".")
+    # Replace spaces with dots in filename.
+    filename = file.filename.replace(" ", ".")
 
-        with open(f"{settings.upload_folder}/{filename}", "wb+") as f:
-            f.write(file.file.read())
+    with open(f"{settings.upload_folder}/{filename}", "wb+") as f:
+        f.write(file.file.read())
 
-        domain_url = f"{settings.domain}/{filename}"
-        send_webhook(f"{domain_url} was uploaded.")
-        return {"html_url": domain_url}
-
-    except Exception as exception:
-        send_webhook(f"{domain_url}:\n{exception}")
-        return {"error": f"Something went wrong: {exception}"}
+    domain_url = f"{settings.domain}/{filename}"
+    send_webhook(f"{domain_url} was uploaded.")
+    return {"html_url": domain_url}
 
 
 @app.get("/", response_class=HTMLResponse)
