@@ -2,8 +2,9 @@
 endpoint for getting the HTML. Images are served from a webserver."""
 from typing import Dict
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 from discord_embed import settings
 from discord_embed.video_file_upload import do_things
@@ -23,6 +24,8 @@ app = FastAPI(
         "url": "https://www.gnu.org/licenses/gpl-3.0.txt",
     },
 )
+
+templates = Jinja2Templates(directory="templates")
 
 
 @app.post("/uploadfiles/")
@@ -61,7 +64,7 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
 
 
 @app.get("/", response_class=HTMLResponse)
-async def main():
+async def main(request: Request):
     """Our index view.
 
     You can upload files here.
@@ -70,19 +73,4 @@ async def main():
         HTMLResponse: Returns HTML for site.
     """
 
-    return """
-<!DOCTYPE html>
-<html>
-<head>
-<title>discord-nice-embed</title>
-</head>
-<body>
-<a href="/docs">Swagger UI - API documentation</a>
-<a href="/redoc">ReDoc - Alternative API documentation</a>
-<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
-<input name="file" type="file">
-<input type="submit">
-</form>
-</body>
-</html>
-"""
+    return templates.TemplateResponse("index.html", {"request": request})
