@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "discord-embed"
-version = "0.1.0"
+version = "1.0.0"
 description = "Make nice embeds for Discord"
 authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
 license = "GPL-3.0"

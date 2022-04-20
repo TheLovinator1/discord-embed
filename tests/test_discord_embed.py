@@ -14,7 +14,7 @@ TEST_FILE = "tests/test.mp4"
 
 def test_version():
     """Test that version is correct."""
-    assert __version__ == "0.1.0"
+    assert __version__ == "1.0.0"
 
 
 def test_domain_ends_with_slash():
