@@ -44,4 +44,4 @@ def make_thumbnail(path_video: str, file_filename: str) -> str:
         .run()
     )
     # Return URL for thumbnail.
-    return f"{settings.domain}/{file_filename}.jpg"
+    return f"{settings.serve_domain}/{file_filename}.jpg"

@@ -48,7 +48,7 @@ async def do_things(file: UploadFile) -> Dict[str, str]:
     """
     filename, file_location = save_to_disk(file)
 
-    file_url = f"{settings.domain}/video/{filename}"
+    file_url = f"{settings.serve_domain}/video/{filename}"
     height, width = video_resolution(file_location)
     screenshot_url = make_thumbnail(file_location, filename)
     html_url = generate_html_for_videos(
@@ -58,5 +58,5 @@ async def do_things(file: UploadFile) -> Dict[str, str]:
         screenshot=screenshot_url,
         filename=filename,
     )
-    send_webhook(f"{settings.domain}/{filename} was uploaded.")
+    send_webhook(f"{settings.serve_domain}/{filename} was uploaded.")
     return {"html_url": f"{html_url}"}

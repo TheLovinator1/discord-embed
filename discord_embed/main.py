@@ -1,6 +1,7 @@
 """Our site has one POST endpoint for uploading videos and one GET
 endpoint for getting the HTML. Images are served from a webserver."""
 from typing import Dict
+from urllib.parse import urljoin
 
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse
@@ -55,7 +56,7 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     with open(f"{settings.upload_folder}/{filename}", "wb+") as f:
         f.write(file.file.read())
 
-    domain_url = f"{settings.domain}/{filename}"
+    domain_url = urljoin(settings.serve_domain, filename)
     send_webhook(f"{domain_url} was uploaded.")
     return {"html_url": domain_url}
 

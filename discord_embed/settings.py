@@ -15,13 +15,13 @@ load_dotenv()
 
 # Check if user has added a domain to the environment.
 try:
-    domain = os.environ["DOMAIN"]
+    serve_domain = os.environ["SERVE_DOMAIN"]
 except KeyError:
     sys.exit("discord-embed: Environment variable 'DOMAIN' is missing!")
 
 # Remove trailing slash from domain
-if domain.endswith("/"):
-    domain = domain[:-1]
+if serve_domain.endswith("/"):
+    serve_domain = serve_domain[:-1]
 
 # Check if we have a folder for uploads.
 try:

@@ -9,6 +9,7 @@ location / {
 """
 import os
 from datetime import datetime
+from urllib.parse import urljoin
 
 from discord_embed import settings
 
@@ -47,7 +48,8 @@ def generate_html_for_videos(
     </head>
     </html>
     """
-    html_url = os.path.join(settings.domain, filename)
+    domain = settings.serve_domain
+    html_url: str = urljoin(domain, filename)
 
     # Take the filename and append .html to it.
     filename += ".html"
