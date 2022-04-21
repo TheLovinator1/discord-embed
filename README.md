@@ -12,7 +12,7 @@ This program will create a .html that you will send instead of a .mp4 file. Disc
 
 | Variable      | Description                                                      |
 | ------------- | ---------------------------------------------------------------- |
-| DOMAIN        | Domain where we server files from, not where we upload files to. |
+| SERVE_DOMAIN  | Domain where we server files from, not where we upload files to. |
 | UPLOAD_FOLDER | Path to the directory where we store files.                      |
 | WEBHOOK_URL   | Discord Webhook URL                                              |
 
