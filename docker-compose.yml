@@ -5,7 +5,9 @@ services:
     env_file:
       - .env
     environment:
-      - DOMAIN=${DOMAIN}
+      - SERVE_DOMAIN=${SERVE_DOMAIN}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - UPLOAD_FOLDER=/Uploads
     ports:
       - "5000:5000"
     volumes:
