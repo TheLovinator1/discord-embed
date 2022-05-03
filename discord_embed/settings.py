@@ -17,7 +17,7 @@ load_dotenv()
 try:
     serve_domain = os.environ["SERVE_DOMAIN"]
 except KeyError:
-    sys.exit("discord-embed: Environment variable 'DOMAIN' is missing!")
+    sys.exit("discord-embed: Environment variable 'SERVE_DOMAIN' is missing!")
 
 # Remove trailing slash from domain
 if serve_domain.endswith("/"):
