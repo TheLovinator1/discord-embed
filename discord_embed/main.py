@@ -53,6 +53,10 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     # Replace spaces with dots in filename.
     filename = file.filename.replace(" ", ".")
 
+    # Remove ? from filename.
+    # TODO: Make a list of every illegal character and remove them.
+    filename = filename.replace("?", "")
+
     with open(f"{settings.upload_folder}/{filename}", "wb+") as f:
         f.write(file.file.read())
 
