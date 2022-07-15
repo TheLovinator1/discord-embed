@@ -9,10 +9,10 @@
       "type": "python",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["discord_embed.main:app"],
+      "args": ["discord_embed.main:app", "--reload", "--port", "5000"],
       "env": {
-        "DOMAIN": "http://127.0.0.1:8000/",
-        "UPLOAD_FOLDER": "uploads"
+        "DOMAIN": "http://127.0.0.1:5000/",
+        "UPLOAD_FOLDER": "./Uploads"
       },
       "jinja": true
     }
