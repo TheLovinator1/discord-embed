@@ -1,5 +1,5 @@
 """Our site has one POST endpoint for uploading videos and one GET
-endpoint for getting the HTML. Images are served from a webserver."""
+endpoint for getting the HTML. Images are served from a web server."""
 from typing import Dict
 from urllib.parse import urljoin
 
@@ -40,11 +40,10 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     If something goes wrong, we will send a message to Discord.
 
     Args:
-        file (UploadFile): Our uploaded file.
+        file: Our uploaded file.
 
     Returns:
-        Dict[str, str]: Returns a dict with the filename or a link to
-        the .html if it was a video.
+        Returns a dict with the filename or a link to the .html if it was a video.
     """
     domain_url = ""
     if file.content_type.startswith("video/"):

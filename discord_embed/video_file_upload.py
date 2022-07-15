@@ -17,10 +17,10 @@ def save_to_disk(file: UploadFile) -> tuple[str, str]:
     If spaces in filename, replace with dots.
 
     Args:
-        file (UploadFile): Our file object.
+        file: Our uploaded file.
 
     Returns:
-        tuple[str, str]: Returns filename and file location.
+        Returns filename and file location.
     """
     # Create folder if it doesn't exist.
     folder_video = os.path.join(settings.upload_folder, "video")
@@ -41,10 +41,10 @@ async def do_things(file: UploadFile) -> Dict[str, str]:
     """Save video to disk, generate HTML, thumbnail, and return a .html URL.
 
     Args:
-        file (UploadFile): Our file object.
+        file: Our uploaded file.
 
     Returns:
-        Dict[str, str]: Returns URL for video.
+        Returns URL for video.
     """
     filename, file_location = save_to_disk(file)
 

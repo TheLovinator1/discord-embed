@@ -24,14 +24,14 @@ def generate_html_for_videos(
     """Generate HTML for video files.
 
     Args:
-        url (str): URL for the video. This is accessible from the browser.
-        width (int): This is the width of the video.
-        height (int): This is the height of the video.
-        screenshot (str): URL for screenshot.
-        filename (str): Original video filename.
+        url: URL for the video. This is accessible from the browser.
+        width: This is the width of the video.
+        height: This is the height of the video.
+        screenshot: URL for screenshot.
+        filename: Original video filename.
 
     Returns:
-        str: Returns HTML for video.
+        Returns HTML for video.
     """
     video_html = f"""
     <!DOCTYPE html>

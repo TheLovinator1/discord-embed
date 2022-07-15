@@ -8,7 +8,7 @@ def send_webhook(message: str) -> None:
     """Send webhook to Discord.
 
     Args:
-        message (str): The message to send.
+        message: The message to send.
     """
     webhook = DiscordWebhook(
         url=settings.webhook_url,

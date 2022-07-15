@@ -10,10 +10,10 @@ def video_resolution(path_to_video: str) -> tuple[int, int]:
     """Find video resolution.
 
     Args:
-        path_to_video (str): Path to video file.
+        path_to_video: Path to video file.
 
     Returns:
-        tuple[int, int]: Returns height and width.
+        Returns height and width.
     """
     probe = ffmpeg.probe(path_to_video)
     video_stream = next((stream for stream in probe["streams"] if stream["codec_type"] == "video"), None)
@@ -31,11 +31,11 @@ def make_thumbnail(path_video: str, file_filename: str) -> str:
     """Make thumbnail for Discord. This is a screenshot of the video.
 
     Args:
-        path_video (str): Path where video file is stored.
-        file_filename (str): File name for URL.
+        path_video: Path where video file is stored.
+        file_filename: File name for URL.
 
     Returns:
-        str: Returns thumbnail filename.
+        Returns thumbnail filename.
     """
     (
         ffmpeg.input(path_video, ss="1")
