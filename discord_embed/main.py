@@ -27,7 +27,7 @@ app = FastAPI(
     },
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="../static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
@@ -35,7 +35,7 @@ templates = Jinja2Templates(directory="templates")
 async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     """Page for uploading files.
 
-    If it is a video, we need to make a HTML file, and a thumbnail
+    If it is a video, we need to make an HTML file, and a thumbnail
     otherwise we can just save the file and return the URL for it.
     If something goes wrong, we will send a message to Discord.
 
@@ -43,13 +43,13 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
         file: Our uploaded file.
 
     Returns:
-        Returns a dict with the filename or a link to the .html if it was a video.
+        Returns a dict with the filename, or a link to the .html if it was a video.
     """
     domain_url = ""
     if file.content_type.startswith("video/"):
         return await do_things(file)
 
-    # Replace spaces with dots in filename.
+    # Replace spaces with dots in the filename.
     filename = file.filename.replace(" ", ".")
 
     # Remove ? from filename.
