@@ -1,8 +1,8 @@
 """Read settings from environment variables."""
 import os
 import pathlib
-import sys
 
+import sys
 from dotenv import load_dotenv
 
 DESCRIPTION = (

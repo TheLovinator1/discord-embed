@@ -1,12 +1,13 @@
 import imghdr
 import os
 
+from fastapi.testclient import TestClient
+
 from discord_embed import __version__, settings
 from discord_embed.generate_html import generate_html_for_videos
 from discord_embed.main import app
 from discord_embed.video import make_thumbnail, video_resolution
 from discord_embed.webhook import send_webhook
-from fastapi.testclient import TestClient
 
 client = TestClient(app)
 TEST_FILE = "tests/test.mp4"

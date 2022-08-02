@@ -1,7 +1,6 @@
 """Stuff that has to do with videos."""
-import sys
-
 import ffmpeg
+import sys
 
 from discord_embed import settings
 

@@ -15,11 +15,11 @@ from discord_embed import settings
 
 
 def generate_html_for_videos(
-    url: str,
-    width: int,
-    height: int,
-    screenshot: str,
-    filename: str,
+        url: str,
+        width: int,
+        height: int,
+        screenshot: str,
+        filename: str,
 ) -> str:
     """Generate HTML for video files.
 
