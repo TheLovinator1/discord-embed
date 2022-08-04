@@ -27,7 +27,7 @@ app = FastAPI(
     },
 )
 
-app.mount("/static", StaticFiles(directory="../static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
@@ -49,12 +49,7 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     if file.content_type.startswith("video/"):
         return await do_things(file)
 
-    # Replace spaces with dots in the filename.
-    filename = file.filename.replace(" ", ".")
-
-    # Remove ? from filename.
-    # TODO: Make a list of every illegal character and remove them.
-    filename = filename.replace("?", "")
+    filename = await remove_illegal_chars(file.filename)
 
     with open(f"{settings.upload_folder}/{filename}", "wb+") as f:
         f.write(file.file.read())
@@ -62,6 +57,49 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     domain_url = urljoin(settings.serve_domain, filename)
     send_webhook(f"{domain_url} was uploaded.")
     return {"html_url": domain_url}
+
+
+async def remove_illegal_chars(filename: str) -> str:
+    """Remove illegal characters from the filename.
+
+    Space is replaced with a dot.
+    "*, ", <, >, △, 「, 」, {, }, |, ^, ;, /, ?, :, @, &, =, +, $, ,," are removed.
+
+
+    Args:
+        filename: The filename to remove illegal characters from.
+
+    Returns:
+        Returns a string with the filename without illegal characters.
+    """
+
+    filename = filename.replace(" ", ".")
+    illegal_characters = [
+        "*",
+        '"',
+        "<",
+        ">",
+        "△",
+        "「",
+        "」",
+        "{",
+        "}",
+        "|",
+        "^",
+        ";",
+        "/",
+        "?",
+        ":",
+        "@",
+        "&",
+        "=",
+        "+",
+        "$",
+        ",",
+    ]
+    for character in illegal_characters:
+        filename = filename.replace(character, "")
+    return filename
 
 
 @app.get("/", response_class=HTMLResponse)
