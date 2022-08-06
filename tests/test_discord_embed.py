@@ -1,4 +1,3 @@
-import imghdr
 import os
 
 from fastapi.testclient import TestClient
@@ -6,7 +5,6 @@ from fastapi.testclient import TestClient
 from discord_embed import __version__, settings
 from discord_embed.generate_html import generate_html_for_videos
 from discord_embed.main import app
-from discord_embed.video import make_thumbnail, video_resolution
 from discord_embed.webhook import send_webhook
 
 client = TestClient(app)
@@ -39,27 +37,6 @@ def test_generate_html_for_videos():
         filename="test_video.mp4",
     )
     assert generated_html == f"{domain}/test_video.mp4"
-
-
-def test_video_resolution():
-    """Test video_resolution() works."""
-    assert video_resolution(TEST_FILE) == (422, 422)
-
-
-def test_make_thumbnail():
-    """Test make_thumbnail() works."""
-    domain = os.environ["SERVE_DOMAIN"]
-
-    # Remove trailing slash from domain
-    if domain.endswith("/"):
-        domain = domain[:-1]
-
-    thumbnail = make_thumbnail(TEST_FILE, "test.mp4")
-    # Check if thumbnail is a jpeg.
-    assert imghdr.what(f"{settings.upload_folder}/test.mp4.jpg") == "jpeg"
-
-    # Check if it returns the correct URL.
-    assert thumbnail == f"{domain}/test.mp4.jpg"
 
 
 def test_save_to_disk():
