@@ -5,7 +5,7 @@ from discord_embed import settings
 
 
 def send_webhook(message: str) -> None:
-    """Send webhook to Discord.
+    """Send a webhook to Discord.
 
     Args:
         message: The message to send.
