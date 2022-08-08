@@ -8,7 +8,7 @@ from fastapi import UploadFile
 
 from discord_embed import settings
 from discord_embed.generate_html import generate_html_for_videos
-from discord_embed.video import make_thumbnail, video_resolution
+from discord_embed.video import Resolution, make_thumbnail, video_resolution
 from discord_embed.webhook import send_webhook
 
 
@@ -32,7 +32,7 @@ def save_to_disk(file: UploadFile) -> VideoFile:
         file: Our uploaded file.
 
     Returns:
-        VideoFile object with filename and location.
+        VideoFile object with the filename and location.
     """
     # Create the folder where we should save the files
     folder_video = os.path.join(settings.upload_folder, "video")
@@ -62,12 +62,12 @@ async def do_things(file: UploadFile) -> Dict[str, str]:
     video_file: VideoFile = save_to_disk(file)
 
     file_url = f"{settings.serve_domain}/video/{video_file.filename}"
-    height, width = video_resolution(video_file.location)
+    res: Resolution = video_resolution(video_file.location)
     screenshot_url = make_thumbnail(video_file.location, video_file.filename)
     html_url = generate_html_for_videos(
         url=file_url,
-        width=width,
-        height=height,
+        width=res.width,
+        height=res.height,
         screenshot=screenshot_url,
         filename=video_file.filename,
     )

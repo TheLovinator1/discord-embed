@@ -1,11 +1,24 @@
 """Stuff that has to do with videos."""
-import ffmpeg
 import sys
+from dataclasses import dataclass
+
+import ffmpeg
 
 from discord_embed import settings
 
 
-def video_resolution(path_to_video: str) -> tuple[int, int]:
+@dataclass
+class Resolution:
+    """Video resolution.
+
+    height: Height of video.
+    width: Width of video.
+    """
+    height: int
+    width: int
+
+
+def video_resolution(path_to_video: str) -> Resolution:
     """Find video resolution.
 
     Args:
@@ -23,7 +36,7 @@ def video_resolution(path_to_video: str) -> tuple[int, int]:
     width = int(video_stream["width"])
     height = int(video_stream["height"])
 
-    return height, width
+    return Resolution(height, width)
 
 
 def make_thumbnail(path_video: str, file_filename: str) -> str:

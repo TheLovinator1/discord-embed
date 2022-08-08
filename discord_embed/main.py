@@ -61,10 +61,6 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
 async def remove_illegal_chars(filename: str) -> str:
     """Remove illegal characters from the filename.
 
-    Space is replaced with a dot.
-    "*, ", <, >, △, 「, 」, {, }, |, ^, ;, /, ?, :, @, &, =, +, $, ,," are removed.
-
-
     Args:
         filename: The filename to remove illegal characters from.
 

@@ -2,14 +2,14 @@ import imghdr
 import os
 
 from discord_embed import settings
-from discord_embed.video import make_thumbnail, video_resolution
+from discord_embed.video import Resolution, make_thumbnail, video_resolution
 
 TEST_FILE = "tests/test.mp4"
 
 
 def test_video_resolution():
     """Test video_resolution() works."""
-    assert video_resolution(TEST_FILE) == (422, 422)
+    assert video_resolution(TEST_FILE) == Resolution(height=422, width=422)
 
 
 def test_make_thumbnail():
