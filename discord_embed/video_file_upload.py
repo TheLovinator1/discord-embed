@@ -1,5 +1,6 @@
 """Things that has to do with video file uploading."""
 import os
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict
 
@@ -11,30 +12,41 @@ from discord_embed.video import make_thumbnail, video_resolution
 from discord_embed.webhook import send_webhook
 
 
-def save_to_disk(file: UploadFile) -> tuple[str, str]:
-    """Save file to disk.
+@dataclass
+class VideoFile:
+    """A video file.
 
-    If spaces in filename, replace with dots.
+    filename: The filename of the video file.
+    location: The location of the video file.
+    """
+    filename: str
+    location: str
+
+
+def save_to_disk(file: UploadFile) -> VideoFile:
+    """Save the uploaded file to disk.
+
+    If spaces in the filename, replace with dots.
 
     Args:
         file: Our uploaded file.
 
     Returns:
-        Returns filename and file location.
+        VideoFile object with filename and location.
     """
-    # Create folder if it doesn't exist.
+    # Create the folder where we should save the files
     folder_video = os.path.join(settings.upload_folder, "video")
     Path(folder_video).mkdir(parents=True, exist_ok=True)
 
-    # Replace spaces with dots in filename.
+    # Replace spaces with dots in the filename.
     filename = file.filename.replace(" ", ".")
 
-    # Save file to disk.
+    # Save the uploaded file to disk.
     file_location = os.path.join(folder_video, filename)
     with open(file_location, "wb+") as f:
         f.write(file.file.read())
 
-    return filename, file_location
+    return VideoFile(filename, file_location)
 
 
 async def do_things(file: UploadFile) -> Dict[str, str]:
@@ -46,17 +58,18 @@ async def do_things(file: UploadFile) -> Dict[str, str]:
     Returns:
         Returns URL for video.
     """
-    filename, file_location = save_to_disk(file)
 
-    file_url = f"{settings.serve_domain}/video/{filename}"
-    height, width = video_resolution(file_location)
-    screenshot_url = make_thumbnail(file_location, filename)
+    video_file: VideoFile = save_to_disk(file)
+
+    file_url = f"{settings.serve_domain}/video/{video_file.filename}"
+    height, width = video_resolution(video_file.location)
+    screenshot_url = make_thumbnail(video_file.location, video_file.filename)
     html_url = generate_html_for_videos(
         url=file_url,
         width=width,
         height=height,
         screenshot=screenshot_url,
-        filename=filename,
+        filename=video_file.filename,
     )
-    send_webhook(f"{settings.serve_domain}/{filename} was uploaded.")
+    send_webhook(f"{settings.serve_domain}/{video_file.filename} was uploaded.")
     return {"html_url": f"{html_url}"}

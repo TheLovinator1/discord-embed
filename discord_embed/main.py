@@ -45,7 +45,6 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     Returns:
         Returns a dict with the filename, or a link to the .html if it was a video.
     """
-    domain_url = ""
     if file.content_type.startswith("video/"):
         return await do_things(file)
 

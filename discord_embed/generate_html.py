@@ -14,13 +14,7 @@ from urllib.parse import urljoin
 from discord_embed import settings
 
 
-def generate_html_for_videos(
-        url: str,
-        width: int,
-        height: int,
-        screenshot: str,
-        filename: str,
-) -> str:
+def generate_html_for_videos(url: str, width: int, height: int, screenshot: str, filename: str) -> str:
     """Generate HTML for video files.
 
     Args:
