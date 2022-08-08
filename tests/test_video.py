@@ -1,8 +1,8 @@
 import imghdr
 import os
 
-import settings
-from video import make_thumbnail, video_resolution
+from discord_embed import settings
+from discord_embed.video import make_thumbnail, video_resolution
 
 TEST_FILE = "tests/test.mp4"
 

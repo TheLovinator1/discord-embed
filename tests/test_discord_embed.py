@@ -3,9 +3,7 @@ import os
 from fastapi.testclient import TestClient
 
 from discord_embed import __version__, settings
-from discord_embed.generate_html import generate_html_for_videos
 from discord_embed.main import app
-from discord_embed.webhook import send_webhook
 
 client = TestClient(app)
 TEST_FILE = "tests/test.mp4"
@@ -21,24 +19,6 @@ def test_domain_ends_with_slash():
     assert not settings.serve_domain.endswith("/")
 
 
-def test_generate_html_for_videos():
-    """Test generate_html_for_videos() works."""
-    domain = os.environ["SERVE_DOMAIN"]
-
-    # Remove trailing slash from domain
-    if domain.endswith("/"):
-        domain = domain[:-1]
-
-    generated_html = generate_html_for_videos(
-        url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        width=1920,
-        height=1080,
-        screenshot="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
-        filename="test_video.mp4",
-    )
-    assert generated_html == f"{domain}/test_video.mp4"
-
-
 def test_save_to_disk():
     """Test save_to_disk() works."""
     # TODO: Implement this test. I need to mock the UploadFile object.
@@ -47,11 +27,6 @@ def test_save_to_disk():
 def test_do_things():
     """Test do_things() works."""
     # TODO: Implement this test. I need to mock the UploadFile object.
-
-
-def test_send_webhook():
-    """Test send_webhook() works."""
-    send_webhook("Running Pytest")
 
 
 def test_main():
