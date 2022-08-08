@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 Uploads/
+uploads/test.mp4.jpg
+uploads/test_video.mp4.html
