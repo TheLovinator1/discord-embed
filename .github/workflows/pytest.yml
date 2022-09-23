@@ -1,5 +1,5 @@
 ---
-name: Test code with pytest
+name: pytest
 on: [ push, pull_request, workflow_dispatch ]
 env:
   SERVE_DOMAIN: https://localhost/
