@@ -1,6 +1,9 @@
 ---
 name: Test code with pytest
 on: [ push, pull_request, workflow_dispatch ]
+env:
+  SERVE_DOMAIN: https://localhost/
+  WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 jobs:
   build:
     strategy:
