@@ -1,0 +1,23 @@
+---
+name: Test code with pytest
+on: [ push, pull_request ]
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.6", "3.7", "3.8", "3.9", "3.10" ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Run tests
+        run: poetry run pytest
