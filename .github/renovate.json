@@ -1,0 +1,27 @@
+{
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "automerge": true
+    }
+  ],
+  "dependencyDashboard": false,
+  "enabledManagers": [
+    "dockerfile",
+    "docker-compose",
+    "poetry",
+    "github-actions"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "platformAutomerge": true
+}
