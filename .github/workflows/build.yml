@@ -2,9 +2,9 @@
 name: Test code, build Docker image, and push to Docker Hub and GitHub Container Registry.
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
   pull_request:
+    branches: [ master ]
   workflow_dispatch:
 
 env:
