@@ -22,5 +22,4 @@ embed for you. The embed will be the same as the one you would get if you send a
 
 - Email: [tlovinator@gmail.com](mailto:tlovinator@gmail.com)
 - Discord: TheLovinator#9276
-- Steam: [TheLovinator](https://steamcommunity.com/id/TheLovinator/)
 - Send an issue: [discord-embed/issues](https://github.com/TheLovinator1/discord-embed/issues)
