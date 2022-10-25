@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 # TODO: Do the Poetry stuff in its own stage
 # TODO: Add support for logging
 # TODO: Add health check
