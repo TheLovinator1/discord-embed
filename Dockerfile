@@ -37,7 +37,7 @@ ADD --chown=botuser:botuser . /home/botuser/discord-embed/
 # 3. Install dependencies.
 ENV PATH="/home/botuser/.local/bin/:$PATH"
 RUN curl -sSL https://install.python-poetry.org | python -
-RUN poetry install --no-interaction --no-ansi --no-dev
+RUN poetry install --no-interaction --no-ansi --only main
 
 # Persist the uploaded files and files we have created.
 VOLUME ["/Uploads"]
