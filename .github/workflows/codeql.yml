@@ -3,6 +3,11 @@ name: "CodeQL"
 on:
   schedule:
     - cron: '33 11 * * 5'
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
 jobs:
   analyze:
     name: Analyze
@@ -25,7 +30,6 @@ jobs:
           languages: 'python'
           queries: security-extended,security-and-quality
           setup-python-dependencies: false
-
       - uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}"
