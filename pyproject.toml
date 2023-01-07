@@ -11,7 +11,7 @@ keywords = ["website", "discord"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.88.0"
+fastapi = "^0.89.0"
 ffmpeg-python = "^0.2.0"
 discord-webhook = "^1.0.0"
 python-multipart = "^0.0.5"
