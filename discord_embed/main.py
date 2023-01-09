@@ -53,7 +53,7 @@ async def remove_illegal_chars(file_name: str) -> str:
     """Remove illegal characters from the filename.
 
     Args:
-        filename: The filename to remove illegal characters from.
+        file_name: The filename to remove illegal characters from.
 
     Returns:
         Returns a string with the filename without illegal characters.
@@ -94,6 +94,9 @@ async def main(request: Request):
     """Our index view.
 
     You can upload files here.
+
+    Args:
+        request: Our request.
 
     Returns:
         TemplateResponse: Returns HTML for site.
