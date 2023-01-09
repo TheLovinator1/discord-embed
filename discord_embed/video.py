@@ -33,8 +33,8 @@ def video_resolution(path_to_video: str) -> Resolution:
         print("No video stream found", file=sys.stderr)
         sys.exit(1)
 
-    width = int(video_stream["width"])
-    height = int(video_stream["height"])
+    width: int = int(video_stream["width"])
+    height: int = int(video_stream["height"])
 
     return Resolution(height, width)
 

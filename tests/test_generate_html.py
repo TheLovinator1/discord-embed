@@ -3,19 +3,19 @@ import os
 from discord_embed.generate_html import generate_html_for_videos
 
 
-def test_generate_html_for_videos():
+def test_generate_html_for_videos() -> None:
     """Test generate_html_for_videos() works."""
-    domain = os.environ["SERVE_DOMAIN"]
+    domain: str = os.environ["SERVE_DOMAIN"]
 
     # Remove trailing slash from domain
     if domain.endswith("/"):
         domain = domain[:-1]
 
     # Delete the old HTML file if it exists
-    if os.path.exists(f"Uploads/test_video.mp4.html"):
-        os.remove(f"Uploads/test_video.mp4.html")
+    if os.path.exists("Uploads/test_video.mp4.html"):
+        os.remove("Uploads/test_video.mp4.html")
 
-    generated_html = generate_html_for_videos(
+    generated_html: str = generate_html_for_videos(
         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         width=1920,
         height=1080,
@@ -27,7 +27,7 @@ def test_generate_html_for_videos():
     # Open the generated HTML and check if it contains the correct URL, width, height, and screenshot.
 
     with open("Uploads/test_video.mp4.html", "r") as generated_html_file:
-        generated_html_lines = generated_html_file.readlines()
+        generated_html_lines: list[str] = generated_html_file.readlines()
         """
         <!DOCTYPE html>
         <html>
@@ -46,32 +46,35 @@ def test_generate_html_for_videos():
 
         for line, html in enumerate(generated_html_lines):
             # Strip spaces and newlines
-            html = html.strip()
+            stripped_html: str = html.strip()
+
+            rick: str = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 
             # Check each line
             if line == 1:
-                assert html == "<!DOCTYPE html>"
+                assert stripped_html == "<!DOCTYPE html>"
             elif line == 2:
-                assert html == "<html>"
+                assert stripped_html == "<html>"
             elif line == 3:
-                assert html.startswith("<!-- Generated at ")
+                assert stripped_html.startswith("<!-- Generated at ")
             elif line == 4:
-                assert html == "<head>"
+                assert stripped_html == "<head>"
             elif line == 5:
-                assert html == '<meta property="og:type" content="video.other">'
+                assert stripped_html == '<meta property="og:type" content="video.other">'
             elif line == 6:
-                assert html == '<meta property="twitter:player" content="https://www.youtube.com/watch?v=dQw4w9WgXcQ">'
+                assert stripped_html == f'<meta property="twitter:player" content="{rick}">'
             elif line == 7:
-                assert html == '<meta property="og:video:type" content="text/html">'
+                assert stripped_html == '<meta property="og:video:type" content="text/html">'
             elif line == 8:
-                assert html == '<meta property="og:video:width" content="1920">'
+                assert stripped_html == '<meta property="og:video:width" content="1920">'
             elif line == 9:
-                assert html == '<meta property="og:video:height" content="1080">'
+                assert stripped_html == '<meta property="og:video:height" content="1080">'
             elif line == 10:
-                assert html == '<meta name="twitter:image" content="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg">'
+                thumb: str = "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+                assert stripped_html == f'<meta name="twitter:image" content="{thumb}">'
             elif line == 11:
-                assert html == '<meta http-equiv="refresh" content="0;url=https://www.youtube.com/watch?v=dQw4w9WgXcQ">'
+                assert stripped_html == f'<meta http-equiv="refresh" content="0;url={rick}">'
             elif line == 12:
-                assert html == "</head>"
+                assert stripped_html == "</head>"
             elif line == 13:
-                assert html == "</html>"
+                assert stripped_html == "</html>"

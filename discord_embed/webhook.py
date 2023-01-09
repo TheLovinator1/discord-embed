@@ -9,7 +9,7 @@ def send_webhook(message: str) -> None:
     Args:
         message: The message to send.
     """
-    webhook = DiscordWebhook(
+    webhook: DiscordWebhook = DiscordWebhook(
         url=settings.webhook_url,
         content=message,
         rate_limit_retry=True,

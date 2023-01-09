@@ -4,7 +4,7 @@ import sys
 
 from dotenv import load_dotenv
 
-DESCRIPTION = (
+DESCRIPTION: str = (
     "Discord will only create embeds for videos and images if they are "
     "smaller than 8 mb. We can 'abuse' this by creating a .html that "
     "contains the 'twitter:player' HTML meta tag linking to the video."
@@ -14,7 +14,7 @@ load_dotenv()
 
 # Check if user has added a domain to the environment.
 try:
-    serve_domain = os.environ["SERVE_DOMAIN"]
+    serve_domain: str = os.environ["SERVE_DOMAIN"]
 except KeyError:
     sys.exit("discord-embed: Environment variable 'SERVE_DOMAIN' is missing!")
 
@@ -24,7 +24,7 @@ if serve_domain.endswith("/"):
 
 # Check if we have a folder for uploads.
 try:
-    upload_folder = os.environ["UPLOAD_FOLDER"]
+    upload_folder: str = os.environ["UPLOAD_FOLDER"]
 except KeyError:
     sys.exit("Environment variable 'UPLOAD_FOLDER' is missing!")
 
@@ -37,6 +37,6 @@ if upload_folder.endswith("/"):
 
 # Discord webhook URL
 try:
-    webhook_url = os.environ["WEBHOOK_URL"]
+    webhook_url: str = os.environ["WEBHOOK_URL"]
 except KeyError:
     sys.exit("Environment variable 'WEBHOOK_URL' is missing!")

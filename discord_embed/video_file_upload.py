@@ -35,14 +35,14 @@ def save_to_disk(file: UploadFile) -> VideoFile:
         VideoFile object with the filename and location.
     """
     # Create the folder where we should save the files
-    folder_video = os.path.join(settings.upload_folder, "video")
+    folder_video: str = os.path.join(settings.upload_folder, "video")
     Path(folder_video).mkdir(parents=True, exist_ok=True)
 
     # Replace spaces with dots in the filename.
-    filename = file.filename.replace(" ", ".")
+    filename: str = file.filename.replace(" ", ".")
 
     # Save the uploaded file to disk.
-    file_location = os.path.join(folder_video, filename)
+    file_location: str = os.path.join(folder_video, filename)
     with open(file_location, "wb+") as f:
         f.write(file.file.read())
 
@@ -61,10 +61,10 @@ async def do_things(file: UploadFile) -> Dict[str, str]:
 
     video_file: VideoFile = save_to_disk(file)
 
-    file_url = f"{settings.serve_domain}/video/{video_file.filename}"
+    file_url: str = f"{settings.serve_domain}/video/{video_file.filename}"
     res: Resolution = video_resolution(video_file.location)
-    screenshot_url = make_thumbnail(video_file.location, video_file.filename)
-    html_url = generate_html_for_videos(
+    screenshot_url: str = make_thumbnail(video_file.location, video_file.filename)
+    html_url: str = generate_html_for_videos(
         url=file_url,
         width=res.width,
         height=res.height,

@@ -18,7 +18,7 @@ def generate_html_for_videos(url: str, width: int, height: int, screenshot: str,
     Returns:
         Returns HTML for video.
     """
-    video_html = f"""
+    video_html: str = f"""
     <!DOCTYPE html>
     <html>
     <!-- Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} -->
@@ -33,13 +33,13 @@ def generate_html_for_videos(url: str, width: int, height: int, screenshot: str,
     </head>
     </html>
     """
-    domain = settings.serve_domain
+    domain: str = settings.serve_domain
     html_url: str = urljoin(domain, filename)
 
     # Take the filename and append .html to it.
     filename += ".html"
 
-    file_path = os.path.join(settings.upload_folder, filename)
+    file_path: str = os.path.join(settings.upload_folder, filename)
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(video_html)
 

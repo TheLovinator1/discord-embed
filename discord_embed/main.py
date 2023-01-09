@@ -10,7 +10,7 @@ from discord_embed import settings
 from discord_embed.video_file_upload import do_things
 from discord_embed.webhook import send_webhook
 
-app = FastAPI(
+app: FastAPI = FastAPI(
     title="discord-nice-embed",
     description=settings.DESCRIPTION,
     version="0.0.1",
@@ -26,7 +26,7 @@ app = FastAPI(
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+templates: Jinja2Templates = Jinja2Templates(directory="templates")
 
 
 @app.post("/uploadfiles/")
@@ -46,12 +46,12 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     if file.content_type.startswith("video/"):
         return await do_things(file)
 
-    filename = await remove_illegal_chars(file.filename)
+    filename: str = await remove_illegal_chars(file.filename)
 
     with open(f"{settings.upload_folder}/{filename}", "wb+") as f:
         f.write(file.file.read())
 
-    domain_url = urljoin(settings.serve_domain, filename)
+    domain_url: str = urljoin(settings.serve_domain, filename)
     send_webhook(f"{domain_url} was uploaded.")
     return {"html_url": domain_url}
 
@@ -66,8 +66,8 @@ async def remove_illegal_chars(filename: str) -> str:
         Returns a string with the filename without illegal characters.
     """
 
-    filename = filename.replace(" ", ".")
-    illegal_characters = [
+    filename: str = filename.replace(" ", ".")  # type: ignore
+    illegal_characters: list[str] = [
         "*",
         '"',
         "<",
@@ -91,7 +91,8 @@ async def remove_illegal_chars(filename: str) -> str:
         ",",
     ]
     for character in illegal_characters:
-        filename = filename.replace(character, "")
+        filename: str = filename.replace(character, "")  # type: ignore
+
     return filename
 
 
@@ -102,7 +103,7 @@ async def main(request: Request):
     You can upload files here.
 
     Returns:
-        HTMLResponse: Returns HTML for site.
+        TemplateResponse: Returns HTML for site.
     """
 
     return templates.TemplateResponse("index.html", {"request": request})
