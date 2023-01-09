@@ -1,7 +1,7 @@
 import os
 import pathlib
-
 import sys
+
 from dotenv import load_dotenv
 
 DESCRIPTION = (

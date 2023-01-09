@@ -56,7 +56,7 @@ def test_generate_html_for_videos():
             elif line == 3:
                 assert html.startswith("<!-- Generated at ")
             elif line == 4:
-                assert html == '<head>'
+                assert html == "<head>"
             elif line == 5:
                 assert html == '<meta property="og:type" content="video.other">'
             elif line == 6:

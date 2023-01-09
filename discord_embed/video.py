@@ -13,6 +13,7 @@ class Resolution:
     height: Height of video.
     width: Width of video.
     """
+
     height: int
     width: int
 

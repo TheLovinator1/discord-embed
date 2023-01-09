@@ -18,6 +18,7 @@ class VideoFile:
     filename: The filename of the video file.
     location: The location of the video file.
     """
+
     filename: str
     location: str
 
