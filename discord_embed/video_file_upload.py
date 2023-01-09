@@ -1,14 +1,12 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict
 
 from fastapi import UploadFile
 
 from discord_embed import settings
 from discord_embed.generate_html import generate_html_for_videos
 from discord_embed.video import Resolution, make_thumbnail, video_resolution
-from discord_embed.webhook import send_webhook
 
 
 @dataclass
@@ -49,7 +47,7 @@ def save_to_disk(file: UploadFile) -> VideoFile:
     return VideoFile(filename, file_location)
 
 
-async def do_things(file: UploadFile) -> Dict[str, str]:
+async def do_things(file: UploadFile) -> str:
     """Save video to disk, generate HTML, thumbnail, and return a .html URL.
 
     Args:
@@ -71,5 +69,4 @@ async def do_things(file: UploadFile) -> Dict[str, str]:
         screenshot=screenshot_url,
         filename=video_file.filename,
     )
-    send_webhook(f"{settings.serve_domain}/{video_file.filename} was uploaded.")
-    return {"html_url": f"{html_url}"}
+    return html_url

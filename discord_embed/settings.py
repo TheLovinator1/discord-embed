@@ -4,11 +4,6 @@ import sys
 
 from dotenv import load_dotenv
 
-DESCRIPTION: str = (
-    "Discord will only create embeds for videos and images if they are "
-    "smaller than 8 mb. We can 'abuse' this by creating a .html that "
-    "contains the 'twitter:player' HTML meta tag linking to the video."
-)
 # Load environment variables
 load_dotenv()
 
