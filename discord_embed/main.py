@@ -56,7 +56,7 @@ async def upload_file(file: UploadFile = File(...)) -> Dict[str, str]:
     return {"html_url": domain_url}
 
 
-async def remove_illegal_chars(filename: str) -> str:
+async def remove_illegal_chars(file_name: str) -> str:
     """Remove illegal characters from the filename.
 
     Args:
@@ -66,7 +66,7 @@ async def remove_illegal_chars(filename: str) -> str:
         Returns a string with the filename without illegal characters.
     """
 
-    filename: str = filename.replace(" ", ".")  # type: ignore
+    filename: str = file_name.replace(" ", ".")  # type: ignore
     illegal_characters: list[str] = [
         "*",
         '"',
