@@ -1,4 +1,3 @@
-"""Send webhook to Discord."""
 from discord_webhook import DiscordWebhook
 
 from discord_embed import settings

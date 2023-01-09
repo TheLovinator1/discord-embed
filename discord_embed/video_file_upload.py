@@ -1,4 +1,3 @@
-"""Things that has to do with video file uploading."""
 import os
 from dataclasses import dataclass
 from pathlib import Path

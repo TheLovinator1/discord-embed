@@ -1,4 +1,3 @@
-"""Stuff that has to do with videos."""
 import sys
 from dataclasses import dataclass
 

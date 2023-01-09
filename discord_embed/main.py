@@ -1,5 +1,3 @@
-"""Our site has one POST endpoint for uploading videos and one GET
-endpoint for getting the HTML. Images are served from a web server."""
 from typing import Dict
 from urllib.parse import urljoin
 

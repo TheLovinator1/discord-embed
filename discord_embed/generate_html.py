@@ -1,12 +1,3 @@
-"""Generate the HTML that makes this program useful.
-
-This is what we will send to other people on Discord.
-You can remove the .html with your web server, so the link will look normal.
-For example, with nginx, you can do this(note the $uri.html):
-location / {
-        try_files $uri $uri/ $uri.html;
-}
-"""
 import os
 from datetime import datetime
 from urllib.parse import urljoin

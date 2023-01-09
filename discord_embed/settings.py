@@ -1,4 +1,3 @@
-"""Read settings from environment variables."""
 import os
 import pathlib
 
