@@ -10,7 +10,8 @@
             "request": "launch",
             "module": "uvicorn",
             "args": [
-                "discord_embed.main:app"
+                "discord_embed.main:app",
+                "--reload",
             ],
             "jinja": true,
             "justMyCode": true
