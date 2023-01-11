@@ -22,18 +22,13 @@ embed for you. The embed will be the same as the one you would get if you send a
 
 Your webserver infront of discord-embed needs to be configured for this program to work.
 
-Nginx:
-```nginx
-# One subdomain that is a reverse proxy to discord-embed and one subdomain (SERVE_DOMAIN) for images
-# The SERVE_DOMAIN url needs this:
-root /var/www/embed; # The UPLOAD_FOLDER where our images are
-location / {
-    try_files $uri $uri/ $uri.html =404; # Note the $uri.html
-}
-```
+## Nginx
 
-Caddy:
-```
+You have two example files here: [embed.subdomain.conf](embed.subdomain.conf) and [i.subdomain.conf](i.subdomain.conf)
+
+## Caddy
+
+```yaml
 # SERVE_DOMAIN = i.example.com
 # UPLOAD_FOLDER = /var/www/embed
 embed.example.com {
@@ -46,6 +41,7 @@ i.example.com {
   file_server
 }
 ```
+
 ## Need help?
 
 - Email: [tlovinator@gmail.com](mailto:tlovinator@gmail.com)
