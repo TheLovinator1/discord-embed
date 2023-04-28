@@ -17,7 +17,7 @@ discord-webhook = "^1.0.0"
 python-multipart = "^0.0.6"
 python-dotenv = "^1.0.0"
 Jinja2 = "^3.1.2"
-uvicorn = {extras = ["standard"], version = "^0.21.0"}
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
 jinja2 = "^3.1.2"
 
 [tool.poetry.group.dev.dependencies]
