@@ -1,0 +1,10 @@
+﻿{
+  "Version": "14.1.1",
+  "Name": "Discord Embed",
+  "DestinationType": "FileUploader",
+  "RequestMethod": "POST",
+  "RequestURL": "https://embed.example.com/uploadfiles/",
+  "Body": "MultipartFormData",
+  "FileFormName": "file",
+  "URL": "{json:html_url}"
+}

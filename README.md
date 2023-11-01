@@ -18,13 +18,20 @@ embed for you. The embed will be the same as the one you would get if you send a
 | UPLOAD_FOLDER | Path to the directory where we store files.                      |
 | WEBHOOK_URL   | Discord Webhook URL                                              |
 
-## Howto
+## How to use
 
-Your webserver infront of discord-embed needs to be configured for this program to work.
+This project is meant to be used with Docker. You can find a docker-compose.yml file in this repository.
+
+We have to do some URL rewriting to make this work. You can find examples for Nginx and Caddy below.
 
 ## Nginx
 
 You have two example files here: [embed.subdomain.conf](embed.subdomain.conf) and [i.subdomain.conf](i.subdomain.conf)
+
+* embed.subdomain.conf
+  * This is the file you will use for the subdomain where you will upload files to.
+* i.subdomain.conf:
+  * This is the file you will use for the subdomain where you will serve files from.
 
 ## Caddy
 
@@ -42,8 +49,22 @@ i.example.com {
 }
 ```
 
-## Need help?
+## ShareX
 
-- Email: [tlovinator@gmail.com](mailto:tlovinator@gmail.com)
-- Discord: TheLovinator#9276
-- Send an issue: [discord-embed/issues](https://github.com/TheLovinator1/discord-embed/issues)
+There is a [ShareX.sxcu](ShareX.sxcu) file in this repository. You can import it into ShareX and use it to upload files
+to your server. You will have to change the RequestURL to your own domain. (The domain where discord-embed runs).
+
+It will return a JSON object with the URL to the file. This is the URL you will send in Discord.
+
+```JSON
+{
+  "Version": "14.1.1",
+  "Name": "Discord Embed",
+  "DestinationType": "FileUploader",
+  "RequestMethod": "POST",
+  "RequestURL": "https://embed.example.com/uploadfiles/",
+  "Body": "MultipartFormData",
+  "FileFormName": "file",
+  "URL": "{json:html_url}"
+}
+```
