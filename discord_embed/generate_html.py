@@ -1,11 +1,19 @@
-import os
-from datetime import datetime
+from __future__ import annotations
+
+import datetime
+from pathlib import Path
 from urllib.parse import urljoin
 
 from discord_embed import settings
 
 
-def generate_html_for_videos(url: str, width: int, height: int, screenshot: str, filename: str) -> str:
+def generate_html_for_videos(
+    url: str,
+    width: int,
+    height: int,
+    screenshot: str,
+    filename: str,
+) -> str:
     """Generate HTML for video files.
 
     Args:
@@ -18,10 +26,13 @@ def generate_html_for_videos(url: str, width: int, height: int, screenshot: str,
     Returns:
         Returns HTML for video.
     """
+    time_now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+    time_now_str: str = time_now.strftime("%Y-%m-%d %H:%M:%S %Z")
+
     video_html: str = f"""
     <!DOCTYPE html>
     <html>
-    <!-- Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} -->
+    <!-- Generated at {time_now_str} -->
     <head>
         <meta property="og:type" content="video.other">
         <meta property="twitter:player" content="{url}">
@@ -39,8 +50,8 @@ def generate_html_for_videos(url: str, width: int, height: int, screenshot: str,
     # Take the filename and append .html to it.
     filename += ".html"
 
-    file_path: str = os.path.join(settings.upload_folder, filename)
-    with open(file_path, "w", encoding="utf-8") as f:
+    file_path = Path(settings.upload_folder, filename)
+    with Path.open(file_path, "w", encoding="utf-8") as f:
         f.write(video_html)
 
     return html_url

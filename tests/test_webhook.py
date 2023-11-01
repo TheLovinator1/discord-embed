@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from discord_embed.webhook import send_webhook
 
 

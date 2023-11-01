@@ -1,12 +1,15 @@
-import os
+from __future__ import annotations
+
 from dataclasses import dataclass
 from pathlib import Path
-
-from fastapi import UploadFile
+from typing import TYPE_CHECKING
 
 from discord_embed import settings
 from discord_embed.generate_html import generate_html_for_videos
 from discord_embed.video import Resolution, make_thumbnail, video_resolution
+
+if TYPE_CHECKING:
+    from fastapi import UploadFile
 
 
 @dataclass
@@ -32,19 +35,23 @@ def save_to_disk(file: UploadFile) -> VideoFile:
     Returns:
         VideoFile object with the filename and location.
     """
+    if file.filename is None:
+        msg = "Filename is None"
+        raise ValueError(msg)
+
     # Create the folder where we should save the files
-    folder_video: str = os.path.join(settings.upload_folder, "video")
-    Path(folder_video).mkdir(parents=True, exist_ok=True)
+    save_folder_video = Path(settings.upload_folder, "video")
+    Path(save_folder_video).mkdir(parents=True, exist_ok=True)
 
     # Replace spaces with dots in the filename.
     filename: str = file.filename.replace(" ", ".")
 
     # Save the uploaded file to disk.
-    file_location: str = os.path.join(folder_video, filename)
-    with open(file_location, "wb+") as f:
+    file_location = Path(save_folder_video, filename)
+    with Path.open(file_location, "wb+") as f:
         f.write(file.file.read())
 
-    return VideoFile(filename, file_location)
+    return VideoFile(filename, str(file_location))
 
 
 async def do_things(file: UploadFile) -> str:
@@ -56,7 +63,6 @@ async def do_things(file: UploadFile) -> str:
     Returns:
         Returns URL for video.
     """
-
     video_file: VideoFile = save_to_disk(file)
 
     file_url: str = f"{settings.serve_domain}/video/{video_file.filename}"

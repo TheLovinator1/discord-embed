@@ -1,9 +1,14 @@
+from __future__ import annotations
+
+import logging
 import sys
 from dataclasses import dataclass
 
 import ffmpeg
 
 from discord_embed import settings
+
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -28,9 +33,12 @@ def video_resolution(path_to_video: str) -> Resolution:
         Returns height and width.
     """
     probe = ffmpeg.probe(path_to_video)
-    video_stream = next((stream for stream in probe["streams"] if stream["codec_type"] == "video"), None)
+    video_stream = next(
+        (stream for stream in probe["streams"] if stream["codec_type"] == "video"),
+        None,
+    )
     if video_stream is None:
-        print("No video stream found", file=sys.stderr)
+        logger.critical("No video stream found")
         sys.exit(1)
 
     width: int = int(video_stream["width"])

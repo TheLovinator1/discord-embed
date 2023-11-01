@@ -16,7 +16,7 @@ ENV PYTHONUNBUFFERED 1
 # Update the system and install curl, it is needed for downloading Poetry.
 RUN apt-get update && apt-get install curl ffmpeg -y --no-install-recommends
 
-# 1. Create user so we don't run as root 
+# 1. Create user so we don't run as root
 # 2. Create directories that the bot needs that are owned by the user.
 #    /Uploads is used to store the uploaded files.
 #    /home/botuser/discord-embed is where the Python code is stored.

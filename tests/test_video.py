@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import imghdr
 import os
+from pathlib import Path
 
 from discord_embed import settings
 from discord_embed.video import Resolution, make_thumbnail, video_resolution
@@ -18,11 +21,11 @@ def test_make_thumbnail() -> None:
 
     # Remove trailing slash from domain
     if domain.endswith("/"):
-        domain: str = domain[:-1]  # type: ignore
+        domain: str = domain[:-1]
 
     # Remove thumbnail if it exists
-    if os.path.exists(f"{settings.upload_folder}/test.mp4.jpg"):
-        os.remove(f"{settings.upload_folder}/test.mp4.jpg")
+    if Path.exists(Path(f"{settings.upload_folder}/test.mp4.jpg")):
+        Path.unlink(Path(f"{settings.upload_folder}/test.mp4.jpg"))
 
     thumbnail: str = make_thumbnail(TEST_FILE, "test.mp4")
 

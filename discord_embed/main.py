@@ -1,8 +1,10 @@
+from __future__ import annotations
+
+from pathlib import Path
 from urllib.parse import urljoin
 
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from discord_embed import settings
@@ -17,12 +19,11 @@ app: FastAPI = FastAPI(
     },
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
 templates: Jinja2Templates = Jinja2Templates(directory="templates")
 
 
 @app.post("/uploadfiles/", description="Where to send a POST request to upload files.")
-async def upload_file(file: UploadFile = File()):
+async def upload_file(file: UploadFile = File()):  # noqa: B008
     """Page for uploading files.
 
     If it is a video, we need to make an HTML file, and a thumbnail
@@ -35,15 +36,22 @@ async def upload_file(file: UploadFile = File()):
     Returns:
         Returns a dict with the filename, or a link to the .html if it was a video.
     """
+    if file.filename is None:
+        send_webhook("Filename is None")
+        return JSONResponse(content={"error": "Filename is None"}, status_code=500)
+    if file.content_type is None:
+        send_webhook("Content type is None")
+        return JSONResponse(content={"error": "Content type is None"}, status_code=500)
+
     if file.content_type.startswith("video/"):
         html_url: str = await do_things(file)
     else:
         filename: str = await remove_illegal_chars(file.filename)
 
-        with open(f"{settings.upload_folder}/{filename}", "wb+") as f:
+        with Path.open(Path(settings.upload_folder, filename), "wb+") as f:
             f.write(file.file.read())
 
-        html_url: str = urljoin(settings.serve_domain, filename)  # type: ignore
+        html_url: str = urljoin(settings.serve_domain, filename)
 
     send_webhook(f"{html_url} was uploaded.")
     return JSONResponse(content={"html_url": html_url})
@@ -58,8 +66,7 @@ async def remove_illegal_chars(file_name: str) -> str:
     Returns:
         Returns a string with the filename without illegal characters.
     """
-
-    filename: str = file_name.replace(" ", ".")  # type: ignore
+    filename: str = file_name.replace(" ", ".")
     illegal_characters: list[str] = [
         "*",
         '"',
@@ -84,13 +91,31 @@ async def remove_illegal_chars(file_name: str) -> str:
         ",",
     ]
     for character in illegal_characters:
-        filename: str = filename.replace(character, "")  # type: ignore
+        filename: str = filename.replace(character, "")
 
     return filename
 
 
+index_html: str = """
+<html lang="en">
+
+<body>
+    <h1>discord-nice-embed</h1>
+    <a href="/docs">Swagger UI - API documentation</a>
+    <br />
+    <a href="/redoc">ReDoc - Alternative API documentation</a>
+    <form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+        <input name="file" type="file" />
+        <input type="submit" value="Upload file" />
+    </form>
+</body>
+
+</html>
+"""
+
+
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
-async def main(request: Request):
+async def main(request: Request):  # noqa: ARG001
     """Our index view.
 
     You can upload files here.
@@ -99,7 +124,6 @@ async def main(request: Request):
         request: Our request.
 
     Returns:
-        TemplateResponse: Returns HTML for site.
+        HTMLResponse: Our index.html page.
     """
-
-    return templates.TemplateResponse("index.html", {"request": request})
+    return index_html
