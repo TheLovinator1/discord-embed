@@ -20,13 +20,12 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v3
-      - run: pipx install poetry
       - uses: FedericoCarboni/setup-ffmpeg@v2
         id: setup-ffmpeg
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
-          cache: 'poetry'
+          python-version: "3.12"
+      - run: pipx install poetry
       - run: poetry install
       - run: poetry run pytest
       - name: Login to Docker Hub
