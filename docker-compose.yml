@@ -1,6 +1,6 @@
 services:
   discord-embed:
-    image: thelovinator/discord-nice-embed-maker-for-my-yoy
+    image: ghcr.io/thelovinator1/discord-embed:latest
     container_name: discord-embed
     env_file:
       - .env
