@@ -5,7 +5,6 @@ from urllib.parse import urljoin
 
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.templating import Jinja2Templates
 
 from discord_embed import settings
 from discord_embed.video_file_upload import do_things
@@ -18,8 +17,6 @@ app: FastAPI = FastAPI(
         "url": "https://github.com/TheLovinator1/discord-embed",
     },
 )
-
-templates: Jinja2Templates = Jinja2Templates(directory="templates")
 
 
 @app.post("/uploadfiles/", description="Where to send a POST request to upload files.")
