@@ -20,7 +20,7 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
-      - uses: FedericoCarboni/setup-ffmpeg@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v3
         id: setup-ffmpeg
       - uses: actions/setup-python@v5
         with:
