@@ -4,7 +4,7 @@ repos:
   # Apply a consistent format to pyproject.toml files.
   # https://pyproject-fmt.readthedocs.io/en/latest/
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "1.5.3"
+    rev: "1.8.0"
     hooks:
       - id: pyproject-fmt
 
@@ -15,7 +15,7 @@ repos:
 
     # Some out-of-the-box hooks for pre-commit.
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: check-ast
       - id: check-builtin-literals
@@ -35,14 +35,14 @@ repos:
 
   # Run Pyupgrade on all Python files. This will upgrade the code to Python 3.12.
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
+    rev: v3.15.2
     hooks:
       - id: pyupgrade
         args: ["--py312-plus"]
 
   # An extremely fast Python linter and formatter.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.9
+    rev: v0.4.2
     hooks:
       - id: ruff-format
       - id: ruff
@@ -50,12 +50,6 @@ repos:
 
   # Static checker for GitHub Actions workflow files.
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.6.26
+    rev: v1.6.27
     hooks:
       - id: actionlint
-
-  # Optimize .png files.
-  - repo: https://github.com/shssoichiro/oxipng
-    rev: v9.0.0
-    hooks:
-      - id: oxipng

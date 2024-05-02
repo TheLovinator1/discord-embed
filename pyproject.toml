@@ -9,16 +9,16 @@ license = "GPL-3.0-or-later"
 python = "^3.12"
 fastapi = "^0.110.0"
 ffmpeg-python = "^0.2.0"
-discord-webhook = "^1.3.0"
+discord-webhook = "^1.3.1"
 python-multipart = "^0.0.9"
-python-dotenv = "^1.0.0"
-Jinja2 = "^3.1.2"
+python-dotenv = "^1.0.1"
+Jinja2 = "^3.1.3"
 uvicorn = { extras = ["standard"], version = "^0.29.0" }
 
 [tool.poetry.group.dev.dependencies]
 httpx = "^0.27.0"
-pytest = "^8.0.0"
-pre-commit = "^3.5.0"
+pytest = "^8.2.0"
+pre-commit = "^3.7.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -31,14 +31,14 @@ fix = true
 unsafe-fixes = true
 preview = true
 select = ["ALL"]
-ignore = ["D100", "D104", "CPY001", "ANN201"]
+ignore = ["D100", "D104", "CPY001", "ANN201", "RUF029"]
 
 [tool.ruff.pydocstyle]
 convention = "google"
 
 [tool.ruff.per-file-ignores]
 "tests/**/*.py" = [
-    "S101", # asserts allowed in tests...
-    "ARG",  # Unused function args -> fixtures nevertheless are functionally relevant...
-    "FBT",  # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
+  "S101", # asserts allowed in tests...
+  "ARG",  # Unused function args -> fixtures nevertheless are functionally relevant...
+  "FBT",  # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
 ]
