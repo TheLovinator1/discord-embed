@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Annotated
 from urllib.parse import urljoin
 
 from fastapi import FastAPI, File, Request, UploadFile
@@ -20,7 +21,7 @@ app: FastAPI = FastAPI(
 
 
 @app.post("/uploadfiles/", description="Where to send a POST request to upload files.")
-async def upload_file(file: UploadFile = File()):  # noqa: B008
+async def upload_file(file: Annotated[UploadFile, File()]):
     """Page for uploading files.
 
     If it is a video, we need to make an HTML file, and a thumbnail

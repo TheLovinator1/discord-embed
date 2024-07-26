@@ -32,6 +32,9 @@ def save_to_disk(file: UploadFile) -> VideoFile:
     Args:
         file: Our uploaded file.
 
+    Raises:
+        ValueError: If the filename is None.
+
     Returns:
         VideoFile object with the filename and location.
     """
