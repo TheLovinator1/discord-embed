@@ -24,7 +24,7 @@ uvicorn = { extras = [ "standard" ], version = "^0.31.0" }
 [tool.poetry.group.dev.dependencies]
 httpx = "^0.27.0"
 pytest = "^8.3.2"
-pre-commit = "^3.7.1"
+pre-commit = "^4.0.0"
 
 [tool.ruff]
 preview = true
