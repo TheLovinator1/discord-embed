@@ -726,13 +726,13 @@ cli = ["click (>=5.0)"]
 
 [[package]]
 name = "python-multipart"
-version = "0.0.13"
+version = "0.0.16"
 description = "A streaming multipart parser for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "python_multipart-0.0.13-py3-none-any.whl", hash = "sha256:18aafc9b0bae0ccc62309e2a03cccdb195e643b95a569a312479b2fdc385fc30"},
-    {file = "python_multipart-0.0.13.tar.gz", hash = "sha256:fccee12108f0c61f753158de49c7259060652e23f9c3d23ca590c7391bb34b44"},
+    {file = "python_multipart-0.0.16-py3-none-any.whl", hash = "sha256:c2759b7b976ef3937214dfb592446b59dfaa5f04682a076f78b117c94776d87a"},
+    {file = "python_multipart-0.0.16.tar.gz", hash = "sha256:8dee37b88dab9b59922ca173c35acb627cc12ec74019f5cd4578369c6df36554"},
 ]
 
 [[package]]
@@ -1132,4 +1132,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "23bf0b6e8e97ad628d282b09ac9b88c5dadba6baad46f08bfa39bb46b36b4fbb"
+content-hash = "d32763194c249572cdd0863826ae7677cd87d46aae716e96cd2f2d702e71d657"
