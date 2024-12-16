@@ -1,4 +1,4 @@
-FROM python:3.12-slim as builder
+FROM python:3.13-slim as builder
 
 # Install Poetry
 RUN pip install poetry
@@ -12,7 +12,7 @@ COPY pyproject.toml poetry.lock ./
 # Create a requirements.txt file
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 # Install ffmpeg
 RUN apt-get update && apt-get install ffmpeg -y --no-install-recommends
