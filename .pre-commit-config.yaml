@@ -1,55 +1,41 @@
-default_language_version:
-  python: python3.12
 repos:
-  # Apply a consistent format to pyproject.toml files.
-  # https://pyproject-fmt.readthedocs.io/en/latest/
-  - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "2.1.4"
-    hooks:
-      - id: pyproject-fmt
-
   - repo: https://github.com/asottile/add-trailing-comma
     rev: v3.1.0
     hooks:
       - id: add-trailing-comma
 
-    # Some out-of-the-box hooks for pre-commit.
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
+      - id: check-added-large-files
       - id: check-ast
       - id: check-builtin-literals
-      - id: check-docstring-first
       - id: check-executables-have-shebangs
       - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
       - id: check-toml
       - id: check-vcs-permalinks
+      - id: check-yaml
       - id: end-of-file-fixer
       - id: mixed-line-ending
       - id: name-tests-test
-        args: [--pytest-test-first]
+        args: ["--pytest-test-first"]
       - id: trailing-whitespace
-        args: [--markdown-linebreak-ext=md]
-        exclude_types:
-          - "html"
 
-  # Run Pyupgrade on all Python files. This will upgrade the code to Python 3.12.
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.16.0
+    rev: v3.19.1
     hooks:
       - id: pyupgrade
-        args: ["--py312-plus"]
+        args: ["--py311-plus"]
 
-  # An extremely fast Python linter and formatter.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.5
+    rev: v0.9.5
     hooks:
       - id: ruff-format
       - id: ruff
         args: ["--fix", "--exit-non-zero-on-fix"]
 
-  # Static checker for GitHub Actions workflow files.
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.1
+    rev: v1.7.7
     hooks:
       - id: actionlint
