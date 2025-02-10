@@ -11,8 +11,7 @@ def test_generate_html_for_videos() -> None:
     domain: str = os.environ["SERVE_DOMAIN"]
 
     # Remove trailing slash from domain
-    if domain.endswith("/"):
-        domain = domain[:-1]
+    domain = domain.removesuffix("/")
 
     # Delete the old HTML file if it exists
     if Path.exists(Path("Uploads/test_video.mp4.html")):

@@ -54,14 +54,25 @@ def make_thumbnail(path_video: str, file_filename: str) -> str:
         path_video: Path where video file is stored.
         file_filename: File name for URL.
 
+    Raises:
+        ffmpeg.Error: If there is an error creating the thumbnail.
+
     Returns:
         Returns thumbnail filename.
     """
-    (
-        ffmpeg.input(path_video, ss="1")
-        .output(f"{settings.upload_folder}/{file_filename}.jpg", vframes=1)
-        .overwrite_output()
-        .run()
-    )
+    output_path: str = f"{settings.upload_folder}/{file_filename}.jpg"
+    try:
+        (
+            ffmpeg.input(path_video, ss="1")
+            .output(output_path, vframes=1, format="image2", update=1)
+            .overwrite_output()
+            .run()
+        )
+    except ffmpeg.Error:
+        logger.exception("Error creating thumbnail")
+        raise
+
+    logger.info("Thumbnail created: %s", output_path)
+
     # Return URL for thumbnail.
     return f"{settings.serve_domain}/{file_filename}.jpg"

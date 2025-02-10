@@ -21,7 +21,7 @@ app: FastAPI = FastAPI(
 
 
 @app.post("/uploadfiles/", description="Where to send a POST request to upload files.")
-async def upload_file(file: Annotated[UploadFile, File()]):
+async def upload_file(file: Annotated[UploadFile, File()]) -> JSONResponse:
     """Page for uploading files.
 
     If it is a video, we need to make an HTML file, and a thumbnail
@@ -42,9 +42,9 @@ async def upload_file(file: Annotated[UploadFile, File()]):
         return JSONResponse(content={"error": "Content type is None"}, status_code=500)
 
     if file.content_type.startswith("video/"):
-        html_url: str = await do_things(file)
+        html_url: str = do_things(file)
     else:
-        filename: str = await remove_illegal_chars(file.filename)
+        filename: str = remove_illegal_chars(file.filename)
 
         with Path.open(Path(settings.upload_folder, filename), "wb+") as f:
             f.write(file.file.read())
@@ -55,7 +55,7 @@ async def upload_file(file: Annotated[UploadFile, File()]):
     return JSONResponse(content={"html_url": html_url})
 
 
-async def remove_illegal_chars(file_name: str) -> str:
+def remove_illegal_chars(file_name: str) -> str:
     """Remove illegal characters from the filename.
 
     Args:
@@ -113,7 +113,7 @@ index_html: str = """
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
-async def main(request: Request):  # noqa: ARG001
+async def main(request: Request) -> str:  # noqa: ARG001
     """Our index view.
 
     You can upload files here.

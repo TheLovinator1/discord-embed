@@ -1,49 +1,86 @@
+[project]
+name = "discord-embed"
+version = "1.0.0"
+description = "Make nice embeds for Discord"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "fastapi",
+  "ffmpeg-python",
+  "discord-webhook",
+  "python-multipart",
+  "python-dotenv",
+  "Jinja2",
+  "uvicorn[standard]",
+]
+
+[dependency-groups]
+dev = ["pytest", "httpx"]
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
-requires = [
-  "poetry-core>=1",
-]
+requires = ["poetry-core>=1"]
 
 [tool.poetry]
 name = "discord-embed"
 version = "1.0.0"
 description = "Make nice embeds for Discord"
-authors = [ "Joakim Hellsén <tlovinator@gmail.com>" ]
+authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
 license = "GPL-3.0-or-later"
 
 [tool.poetry.dependencies]
-python = "^3.12"
-fastapi = "^0.115.0"
-ffmpeg-python = "^0.2.0"
-discord-webhook = "^1.3.1"
-python-multipart = "^0.0.20"
-python-dotenv = "^1.0.1"
-Jinja2 = "^3.1.4"
-uvicorn = { extras = [ "standard" ], version = "^0.34.0" }
+python = "^3.13"
+fastapi = "*"
+ffmpeg-python = "*"
+discord-webhook = "*"
+python-multipart = "*"
+python-dotenv = "*"
+Jinja2 = "*"
+uvicorn = {extras = ["standard"], version = "*"}
 
 [tool.poetry.group.dev.dependencies]
-httpx = "^0.28.0"
-pytest = "^8.3.2"
-pre-commit = "^4.0.0"
+httpx = "*"
+pytest = "*"
 
 [tool.ruff]
 preview = true
-fix = true
-unsafe-fixes = true
-lint.select = [
-  "ALL",
-]
+lint.select = ["ALL"]
+lint.pydocstyle.convention = "google"
+lint.isort.required-imports = ["from __future__ import annotations"]
+lint.pycodestyle.ignore-overlong-task-comments = true
+line-length = 120
+
 lint.ignore = [
-  "ANN201",
-  "CPY001",
-  "D100",
-  "D104",
-  "RUF029",
+  "CPY001", # Checks for the absence of copyright notices within Python files.
+  "D100",   # Checks for undocumented public module definitions.
+  "D104",   # Checks for undocumented public package definitions.
+  "D106",   # Checks for undocumented public class definitions, for nested classes.
+  "ERA001", # Checks for commented-out Python code.
+  "FIX002", # Checks for "TODO" comments.
+
+  # Conflicting lint rules when using Ruff's formatter
+  # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+  "COM812", # Checks for the absence of trailing commas.
+  "COM819", # Checks for the presence of prohibited trailing commas.
+  "D206",   # Checks for docstrings that are indented with tabs.
+  "D300",   # Checks for docstrings that use '''triple single quotes''' instead of """triple double quotes""".
+  "E111",   # Checks for indentation with a non-multiple of 4 spaces.
+  "E114",   # Checks for indentation of comments with a non-multiple of 4 spaces.
+  "E117",   # Checks for over-indented code.
+  "ISC001", # Checks for implicitly concatenated strings on a single line.
+  "ISC002", # Checks for implicitly concatenated strings that span multiple lines.
+  "Q000",   # Checks for inline strings that use single quotes or double quotes, depending on the value of the lint.flake8-quotes.inline-quotes option.
+  "Q001",   # Checks for multiline strings that use single quotes or double quotes, depending on the value of the lint.flake8-quotes.multiline-quotes setting.
+  "Q002",   # Checks for docstrings that use single quotes or double quotes, depending on the value of the lint.flake8-quotes.docstring-quotes setting.
+  "Q003",   # Checks for strings that include escaped quotes, and suggests changing the quote style to avoid the need to escape them.
+  "W191",   # Checks for indentation that uses tabs.
 ]
 
-lint.per-file-ignores."tests/**/*.py" = [
-  "ARG",  # Unused function args -> fixtures nevertheless are functionally relevant...
-  "FBT",  # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
-  "S101", # asserts allowed in tests...
+[tool.ruff.lint.per-file-ignores]
+"**/test_*.py" = [
+  "ARG",     # Unused function args -> fixtures nevertheless are functionally relevant...
+  "FBT",     # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
+  "PLR2004", # Magic value used in comparison, ...
+  "S101",    # asserts allowed in tests...
+  "S311",    # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
-lint.pydocstyle.convention = "google"

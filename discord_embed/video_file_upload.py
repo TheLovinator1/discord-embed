@@ -57,7 +57,7 @@ def save_to_disk(file: UploadFile) -> VideoFile:
     return VideoFile(filename, str(file_location))
 
 
-async def do_things(file: UploadFile) -> str:
+def do_things(file: UploadFile) -> str:
     """Save video to disk, generate HTML, thumbnail, and return a .html URL.
 
     Args:

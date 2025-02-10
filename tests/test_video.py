@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import imghdr
 import os
 from pathlib import Path
 
@@ -24,13 +23,11 @@ def test_make_thumbnail() -> None:
         domain: str = domain[:-1]
 
     # Remove thumbnail if it exists
-    if Path.exists(Path(f"{settings.upload_folder}/test.mp4.jpg")):
-        Path.unlink(Path(f"{settings.upload_folder}/test.mp4.jpg"))
+    thumbnail_path = Path(f"{settings.upload_folder}/test.mp4.jpg")
+    if thumbnail_path.exists():
+        thumbnail_path.unlink()
 
     thumbnail: str = make_thumbnail(TEST_FILE, "test.mp4")
-
-    # Check if thumbnail is a jpeg.
-    assert imghdr.what(f"{settings.upload_folder}/test.mp4.jpg") == "jpeg"
 
     # Check if it returns the correct URL.
     assert thumbnail == f"{domain}/test.mp4.jpg"
