@@ -1,6 +1,11 @@
 {
     "python.analysis.typeCheckingMode": "standard",
     "cSpell.words": [
-        "dotenv"
+        "botuser",
+        "dotenv",
+        "pyproject",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONUNBUFFERED",
+        "uvicorn"
     ]
 }
