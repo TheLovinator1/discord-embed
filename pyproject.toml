@@ -5,12 +5,13 @@ description = "Make nice embeds for Discord"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+  "discord-webhook",
   "fastapi",
   "ffmpeg-python",
-  "discord-webhook",
-  "python-multipart",
-  "python-dotenv",
   "Jinja2",
+  "python-dotenv",
+  "python-multipart",
+  "sentry-sdk[fastapi]",
   "uvicorn[standard]",
 ]
 
@@ -30,12 +31,13 @@ license = "GPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = "^3.13"
+discord-webhook = "*"
 fastapi = "*"
 ffmpeg-python = "*"
-discord-webhook = "*"
-python-multipart = "*"
-python-dotenv = "*"
 Jinja2 = "*"
+python-dotenv = "*"
+python-multipart = "*"
+sentry-sdk = {extras = ["fastapi"], version = "*"}
 uvicorn = {extras = ["standard"], version = "*"}
 
 [tool.poetry.group.dev.dependencies]
@@ -48,7 +50,6 @@ lint.select = ["ALL"]
 lint.pydocstyle.convention = "google"
 lint.isort.required-imports = ["from __future__ import annotations"]
 lint.pycodestyle.ignore-overlong-task-comments = true
-line-length = 120
 
 lint.ignore = [
   "CPY001", # Checks for the absence of copyright notices within Python files.
@@ -75,6 +76,7 @@ lint.ignore = [
   "Q003",   # Checks for strings that include escaped quotes, and suggests changing the quote style to avoid the need to escape them.
   "W191",   # Checks for indentation that uses tabs.
 ]
+line-length = 120
 
 [tool.ruff.lint.per-file-ignores]
 "**/test_*.py" = [

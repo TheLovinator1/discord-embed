@@ -5,12 +5,20 @@ from pathlib import Path
 from typing import Annotated
 from urllib.parse import urljoin
 
+import sentry_sdk
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from discord_embed.settings import serve_domain, upload_folder, webhook_url
 from discord_embed.video_file_upload import do_things
 from discord_embed.webhook import send_webhook
+
+sentry_sdk.init(
+    dsn="https://61f2ac51bc9083592bab1e3794305ec0@o4505228040339456.ingest.us.sentry.io/4508796999434240",
+    send_default_pii=True,
+    traces_sample_rate=1.0,
+    _experiments={"continuous_profiling_auto_start": True},
+)
 
 app: FastAPI = FastAPI(
     title="discord-nice-embed",
