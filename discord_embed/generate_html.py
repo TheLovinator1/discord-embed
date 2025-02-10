@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import datetime
+import logging
 from pathlib import Path
 from urllib.parse import urljoin
 
 from discord_embed import settings
+
+logger: logging.Logger = logging.getLogger("uvicorn.error")
 
 
 def generate_html_for_videos(
@@ -53,5 +56,15 @@ def generate_html_for_videos(
     file_path = Path(settings.upload_folder, filename)
     with Path.open(file_path, "w", encoding="utf-8") as f:
         f.write(video_html)
+
+    logger.info("Generated HTML file: %s", html_url)
+    logger.info("Saved HTML file to disk: %s", file_path)
+    logger.info("Screenshot URL: %s", screenshot)
+    logger.info("Video URL: %s", url)
+    logger.info("Video resolution: %dx%d", width, height)
+    logger.info("Filename: %s", filename)
+    logger.info("Domain: %s", domain)
+    logger.info("HTML URL: %s", html_url)
+    logger.info("Time now: %s", time_now_str)
 
     return html_url

@@ -3,12 +3,14 @@
     "configurations": [
         {
             "name": "Python: FastAPI",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
             "args": [
                 "discord_embed.main:app",
                 "--reload",
+                "--log-level",
+                "debug"
             ],
             "jinja": true,
             "justMyCode": true

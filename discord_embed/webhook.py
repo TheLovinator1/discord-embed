@@ -10,7 +10,7 @@ from discord_embed import settings
 if TYPE_CHECKING:
     from requests import Response
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger("uvicorn.error")
 
 
 def send_webhook(message: str) -> None:
@@ -19,6 +19,7 @@ def send_webhook(message: str) -> None:
     Args:
         message: The message to send.
     """
+    logger.info("Sending webhook with message: %s", message)
     webhook: DiscordWebhook = DiscordWebhook(
         url=settings.webhook_url,
         content=message or "discord-nice-embed: No message was provided.",

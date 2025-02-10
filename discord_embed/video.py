@@ -8,7 +8,7 @@ import ffmpeg
 
 from discord_embed import settings
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger("uvicorn.error")
 
 
 @dataclass

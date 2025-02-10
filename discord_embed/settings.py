@@ -3,10 +3,10 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from dotenv import find_dotenv, load_dotenv
+from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv(find_dotenv(), verbose=True)
+load_dotenv(verbose=True)
 
 webhook_url: str = os.environ["WEBHOOK_URL"]
 serve_domain: str = os.environ["SERVE_DOMAIN"].removesuffix("/")

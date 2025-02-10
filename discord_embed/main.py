@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Annotated
 from urllib.parse import urljoin
@@ -7,7 +8,7 @@ from urllib.parse import urljoin
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 
-from discord_embed import settings
+from discord_embed.settings import serve_domain, upload_folder, webhook_url
 from discord_embed.video_file_upload import do_things
 from discord_embed.webhook import send_webhook
 
@@ -18,6 +19,12 @@ app: FastAPI = FastAPI(
         "url": "https://github.com/TheLovinator1/discord-embed",
     },
 )
+logger: logging.Logger = logging.getLogger("uvicorn.error")
+
+logger.info("Server started on http://localhost:8000/")
+logger.debug("\tServe domain: %s", serve_domain)
+logger.debug("\tUpload folder: %s", upload_folder)
+logger.debug("\tWebhook URL: %s", webhook_url)
 
 
 @app.post("/uploadfiles/", description="Where to send a POST request to upload files.")
@@ -46,10 +53,10 @@ async def upload_file(file: Annotated[UploadFile, File()]) -> JSONResponse:
     else:
         filename: str = remove_illegal_chars(file.filename)
 
-        with Path.open(Path(settings.upload_folder, filename), "wb+") as f:
+        with Path.open(Path(upload_folder, filename), "wb+") as f:
             f.write(file.file.read())
 
-        html_url: str = urljoin(settings.serve_domain, filename)
+        html_url: str = urljoin(serve_domain, filename)
 
     send_webhook(f"{html_url} was uploaded.")
     return JSONResponse(content={"html_url": html_url})
@@ -90,6 +97,7 @@ def remove_illegal_chars(file_name: str) -> str:
     ]
     for character in illegal_characters:
         filename: str = filename.replace(character, "")
+        logger.info("Removed illegal character: %s from filename", character)
 
     return filename
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -10,6 +11,8 @@ from discord_embed.video import Resolution, make_thumbnail, video_resolution
 
 if TYPE_CHECKING:
     from fastapi import UploadFile
+
+logger: logging.Logger = logging.getLogger("uvicorn.error")
 
 
 @dataclass
@@ -78,4 +81,5 @@ def do_things(file: UploadFile) -> str:
         screenshot=screenshot_url,
         filename=video_file.filename,
     )
+    logger.info("Generated HTML URL: %s", html_url)
     return html_url
