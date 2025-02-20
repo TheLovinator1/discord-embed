@@ -102,6 +102,8 @@ def remove_illegal_chars(file_name: str) -> str:
         "+",
         "$",
         ",",
+        "#",
+        "%",
     ]
     for character in illegal_characters:
         filename: str = filename.replace(character, "")
