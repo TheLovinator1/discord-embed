@@ -9,6 +9,7 @@ import sentry_sdk
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 
+from discord_embed.misc import remove_illegal_chars
 from discord_embed.settings import serve_domain, upload_folder, webhook_url
 from discord_embed.video_file_upload import do_things
 from discord_embed.webhook import send_webhook
@@ -68,48 +69,6 @@ async def upload_file(file: Annotated[UploadFile, File()]) -> JSONResponse:
 
     send_webhook(f"{html_url} was uploaded.")
     return JSONResponse(content={"html_url": html_url})
-
-
-def remove_illegal_chars(file_name: str) -> str:
-    """Remove illegal characters from the filename.
-
-    Args:
-        file_name: The filename to remove illegal characters from.
-
-    Returns:
-        Returns a string with the filename without illegal characters.
-    """
-    filename: str = file_name.replace(" ", ".")
-    illegal_characters: list[str] = [
-        '"',
-        ",",
-        ";",
-        ":",
-        "?",
-        "{",
-        "}",
-        "「",
-        "」",
-        "@",
-        "*",
-        "/",
-        "&",
-        "#",
-        "%",
-        "^",
-        "+",
-        "<",
-        "=",
-        ">",
-        "|",
-        "△",
-        "$",
-    ]
-    for character in illegal_characters:
-        filename: str = filename.replace(character, "")
-        logger.info("Removed illegal character: %s from filename", character)
-
-    return filename
 
 
 index_html: str = """

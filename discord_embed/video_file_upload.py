@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from discord_embed import settings
 from discord_embed.generate_html import generate_html_for_videos
-from discord_embed.main import remove_illegal_chars
+from discord_embed.misc import remove_illegal_chars
 from discord_embed.video import Resolution, make_thumbnail, video_resolution
 
 if TYPE_CHECKING:
