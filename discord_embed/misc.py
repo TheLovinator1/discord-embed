@@ -42,6 +42,7 @@ def remove_illegal_chars(file_name: str) -> str:
     ]
     for character in illegal_characters:
         filename: str = filename.replace(character, "")
-        logger.info("Removed illegal character: %s from filename", character)
+        if character in filename:
+            logger.info("Removed illegal character: %s from filename", character)
 
     return filename
