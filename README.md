@@ -1,6 +1,6 @@
 # discord-embed
 
-Discord will only create embeds for videos and images if they are smaller than 8MB. We can "abuse" this by using
+Discord will only create embeds for videos and images if they are smaller than 10MiB. We can "abuse" this by using
 the [twitter:image HTML meta tag](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/markup).
 
 This is useful when you send a video and want it to be playable in Discord.
