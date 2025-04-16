@@ -97,7 +97,7 @@ jobs:
           images: |
             ghcr.io/thelovinator1/discord-embed
             thelovinator/discord-nice-embed-maker-for-my-yoy
-            git.lovinator.space/thelovinator/anewdawn
+            git.lovinator.space/thelovinator/discord-embed
           tags: |
             type=raw,value=latest,enable=${{ gitea.ref == format('refs/heads/{0}', 'master') }}
             type=raw,value=master,enable=${{ gitea.ref == format('refs/heads/{0}', 'master') }}
