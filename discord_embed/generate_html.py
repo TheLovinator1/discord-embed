@@ -29,7 +29,7 @@ def generate_html_for_videos(
     Returns:
         Returns HTML for video.
     """
-    time_now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+    time_now: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
     time_now_str: str = time_now.strftime("%Y-%m-%d %H:%M:%S %Z")
 
     video_html: str = f"""
