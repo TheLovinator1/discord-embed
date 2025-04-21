@@ -1,19 +1,27 @@
 {
     "python.analysis.typeCheckingMode": "standard",
     "cSpell.words": [
+        "binfmt",
         "botuser",
+        "Buildx",
+        "DOCKERHUB",
         "docstrings",
         "dotenv",
         "fastapi",
         "ffprobe",
+        "gitea",
         "httpx",
         "isort",
         "jrottenberg",
+        "lovinator",
         "pycodestyle",
         "pydocstyle",
         "pyproject",
+        "pytest",
         "PYTHONDONTWRITEBYTECODE",
         "PYTHONUNBUFFERED",
+        "thelovinator",
+        "tonistiigi",
         "uvicorn"
     ]
 }
