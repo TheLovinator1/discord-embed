@@ -43,25 +43,36 @@ jobs:
         with:
           image: tonistiigi/binfmt:master
           platforms: linux/amd64,linux/arm64
-          cache-image: false
+          cache-image: true
 
       # Set up Buildx so we can build multi-arch images
       - uses: docker/setup-buildx-action@v3
 
+      # Cache apt packages
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        id: apt-cache
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/build.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
 
       # Install ffmpeg
       - name: Install ffmpeg
         run: |
-          sudo apt-get update
+          # Only update apt if cache was not hit
+          if [ "${{ steps.apt-cache.outputs.cache-hit }}" != 'true' ]; then
+            sudo apt-get update
+          fi
           sudo apt-get install -y ffmpeg
 
       # Set up uv for Python dependency management
       - uses: astral-sh/setup-uv@v5
+        id: setup-uv
         with:
+          enable-cache: true
           version: "latest"
-
-      # Install dependencies
-      - run: uv sync --all-extras --all-groups
 
       # Run tests
       - run: uv run pytest
