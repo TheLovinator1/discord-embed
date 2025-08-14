@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest", "httpx", "nox"]
+dev = ["pytest", "httpx"]
 
 [tool.ruff]
 preview = true
