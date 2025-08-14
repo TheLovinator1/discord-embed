@@ -20,4 +20,4 @@ COPY --chown=botuser:botuser discord_embed /app/discord_embed
 VOLUME ["/Uploads"]
 EXPOSE 5000
 
-CMD ["fastapi", "run", "discord_embed/main.py", "--proxy-headers", "--port", "5000", "--log-level", "debug", "--forwarded-allow-ips", "*"]
+CMD ["python", "-m", "uvicorn", "discord_embed.main:app", "--host", "0.0.0.0", "--port", "5000", "--use-colors", "--proxy-headers", "--forwarded-allow-ips", "*", "--log-level", "debug"]
