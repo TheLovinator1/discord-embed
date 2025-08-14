@@ -8,6 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN useradd --create-home botuser && mkdir /Uploads && chown botuser:botuser /Uploads
 USER botuser
+ENV PATH="${PATH}:/home/botuser/.local/bin"
 
 WORKDIR /app
 
