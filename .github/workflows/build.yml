@@ -6,8 +6,6 @@ on:
       - master
   pull_request:
   workflow_dispatch:
-  schedule:
-    - cron: "0 14 * * 0"
 
 env:
   SERVE_DOMAIN: https://localhost/
