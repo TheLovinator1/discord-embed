@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from discord_embed.generate_html import generate_html_for_videos
+from discord_embed.main import generate_html_for_videos
 
 
 def test_generate_html_for_videos() -> None:

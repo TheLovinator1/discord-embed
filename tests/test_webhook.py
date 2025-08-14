@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from discord_embed.webhook import send_webhook
+from discord_embed.main import send_webhook
 
 
 def test_send_webhook() -> None:

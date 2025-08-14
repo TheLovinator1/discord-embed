@@ -5,10 +5,10 @@ description = "Make nice embeds for Discord"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+  "av",
   "discord-webhook",
-  "fastapi",
-  "ffmpeg-python",
-  "Jinja2",
+  "fastapi[standard]",
+  "pillow",
   "python-dotenv",
   "python-multipart",
   "sentry-sdk[fastapi]",

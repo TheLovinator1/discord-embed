@@ -6,8 +6,7 @@ from typing import TYPE_CHECKING
 
 from fastapi.testclient import TestClient
 
-from discord_embed import settings
-from discord_embed.main import app
+from discord_embed.main import app, serve_domain
 
 if TYPE_CHECKING:
     import httpx
@@ -18,7 +17,7 @@ TEST_FILE: str = "tests/test.mp4"
 
 def test_domain_ends_with_slash() -> None:
     """Test domain ends with a slash."""
-    assert not settings.serve_domain.endswith("/")
+    assert not serve_domain.endswith("/")
 
 
 def test_main() -> None:

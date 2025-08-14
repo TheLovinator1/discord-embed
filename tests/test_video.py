@@ -3,15 +3,14 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from discord_embed import settings
-from discord_embed.video import Resolution, make_thumbnail, video_resolution
+from discord_embed.main import make_thumbnail, upload_folder, video_resolution
 
 TEST_FILE = "tests/test.mp4"
 
 
 def test_video_resolution() -> None:
     """Test video_resolution() works."""
-    assert video_resolution(TEST_FILE) == Resolution(height=422, width=422)
+    assert video_resolution(TEST_FILE) == (422, 422)
 
 
 def test_make_thumbnail() -> None:
@@ -23,7 +22,7 @@ def test_make_thumbnail() -> None:
         domain: str = domain[:-1]
 
     # Remove thumbnail if it exists
-    thumbnail_path = Path(f"{settings.upload_folder}/test.mp4.jpg")
+    thumbnail_path = Path(f"{upload_folder}/test.mp4.jpg")
     if thumbnail_path.exists():
         thumbnail_path.unlink()
 

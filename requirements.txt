@@ -1,0 +1,8 @@
+av
+discord-webhook
+fastapi[standard]
+pillow
+python-dotenv
+python-multipart
+sentry-sdk[fastapi]
+uvicorn[standard]
