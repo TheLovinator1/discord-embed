@@ -29,6 +29,7 @@ lint.isort.force-single-line = true
 lint.ignore = [
   "CPY001", # Checks for the absence of copyright notices within Python files.
   "D100",   # Checks for undocumented public module definitions.
+  "D104",   # Checks for undocumented public package definitions.
 
   # Conflicting lint rules when using Ruff's formatter
   # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
