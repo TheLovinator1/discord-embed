@@ -184,7 +184,7 @@ def do_things(file: UploadFile) -> str:
         filename=filename,
     )
     logger.info("Generated HTML URL: %s", html_url)
-    logger.debug("Video file location: %s", str(file_location))
+    logger.debug("Video file location: %s", file_location)
     logger.debug("Video filename: %s", filename)
 
     return html_url
