@@ -3,7 +3,9 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from discord_embed.main import make_thumbnail, upload_folder, video_resolution
+from discord_embed.main import make_thumbnail
+from discord_embed.main import upload_folder
+from discord_embed.main import video_resolution
 
 TEST_FILE = "tests/test.mp4"
 

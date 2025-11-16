@@ -12,11 +12,12 @@ embed for you. The embed will be the same as the one you would get if you send a
 
 ## Environment variables
 
-| Variable      | Description                                                      |
-|---------------|------------------------------------------------------------------|
-| SERVE_DOMAIN  | Domain where we server files from, not where we upload files to. |
-| UPLOAD_FOLDER | Path to the directory where we store files.                      |
-| WEBHOOK_URL   | Discord Webhook URL                                              |
+| Variable      | Description                                                                                   |
+| ------------- | --------------------------------------------------------------------------------------------- |
+| SERVE_DOMAIN  | Domain where we server files from, not where we upload files to.                              |
+| UPLOAD_FOLDER | Path to the directory where we store files.                                                   |
+| WEBHOOK_URL   | Discord Webhook URL                                                                           |
+| SENTRY_DSN    | Optional. Overrides the Sentry DSN. Set to an empty string (`""`) to disable crash reporting. |
 
 ## How to use
 

@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING
 
 from fastapi.testclient import TestClient
 
-from discord_embed.main import app, serve_domain
+from discord_embed.main import app
+from discord_embed.main import serve_domain
 
 if TYPE_CHECKING:
     import httpx

@@ -20,18 +20,15 @@ dev = ["pytest", "httpx"]
 
 [tool.ruff]
 preview = true
+line-length = 160
 lint.select = ["ALL"]
 lint.pydocstyle.convention = "google"
 lint.isort.required-imports = ["from __future__ import annotations"]
-lint.pycodestyle.ignore-overlong-task-comments = true
+lint.isort.force-single-line = true
 
 lint.ignore = [
   "CPY001", # Checks for the absence of copyright notices within Python files.
   "D100",   # Checks for undocumented public module definitions.
-  "D104",   # Checks for undocumented public package definitions.
-  "D106",   # Checks for undocumented public class definitions, for nested classes.
-  "ERA001", # Checks for commented-out Python code.
-  "FIX002", # Checks for "TODO" comments.
 
   # Conflicting lint rules when using Ruff's formatter
   # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
@@ -50,13 +47,6 @@ lint.ignore = [
   "Q003",   # Checks for strings that include escaped quotes, and suggests changing the quote style to avoid the need to escape them.
   "W191",   # Checks for indentation that uses tabs.
 ]
-line-length = 120
 
 [tool.ruff.lint.per-file-ignores]
-"**/test_*.py" = [
-  "ARG",     # Unused function args -> fixtures nevertheless are functionally relevant...
-  "FBT",     # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
-  "PLR2004", # Magic value used in comparison, ...
-  "S101",    # asserts allowed in tests...
-  "S311",    # Standard pseudo-random generators are not suitable for cryptographic purposes
-]
+"tests/*" = ["S101", "D103", "PLR2004"]

@@ -4,15 +4,18 @@ import datetime
 import logging
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING
+from typing import Annotated
 from urllib.parse import urljoin
 
 import av
-import sentry_sdk
 from discord_webhook import DiscordWebhook
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, Request, UploadFile
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI
+from fastapi import File
+from fastapi import UploadFile
+from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse
 
 if TYPE_CHECKING:
     from av.container import InputContainer
@@ -28,12 +31,12 @@ upload_folder: str = os.environ["UPLOAD_FOLDER"].removesuffix("/")
 Path(upload_folder).mkdir(parents=True, exist_ok=True)
 
 
-sentry_sdk.init(
-    dsn="https://61f2ac51bc9083592bab1e3794305ec0@o4505228040339456.ingest.us.sentry.io/4508796999434240",
-    send_default_pii=True,
-    traces_sample_rate=1.0,
-    _experiments={"continuous_profiling_auto_start": True},
-)
+default_dsn = "https://61f2ac51bc9083592bab1e3794305ec0@o4505228040339456.ingest.us.sentry.io/4508796999434240"
+sentry_dsn: str = os.environ.get("SENTRY_DSN", default_dsn)
+if sentry_dsn:
+    import sentry_sdk
+
+    sentry_sdk.init(dsn=sentry_dsn, send_default_pii=True)
 
 app: FastAPI = FastAPI(
     title="discord-nice-embed",
@@ -261,13 +264,10 @@ index_html: str = """
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
-async def main(request: Request) -> str:  # noqa: ARG001
+async def main() -> str:
     """Our index view.
 
     You can upload files here.
-
-    Args:
-        request: Our request.
 
     Returns:
         HTMLResponse: Our index.html page.
