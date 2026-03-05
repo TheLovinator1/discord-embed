@@ -46,7 +46,7 @@ jobs:
           cache-image: true
 
       # Set up Buildx so we can build multi-arch images
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       # Set up uv for Python dependency management
       - uses: astral-sh/setup-uv@v7
