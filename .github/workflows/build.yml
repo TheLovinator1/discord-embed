@@ -74,7 +74,7 @@ jobs:
 
       # Extract metadata (tags, labels) from Git reference and GitHub events for Docker
       - id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: |
             ghcr.io/thelovinator1/discord-embed
