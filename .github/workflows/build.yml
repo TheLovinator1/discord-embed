@@ -84,7 +84,7 @@ jobs:
             type=raw,value=master,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
 
       # Build and push the Docker image
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64,linux/arm64
