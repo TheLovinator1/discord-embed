@@ -59,7 +59,7 @@ jobs:
       - run: uv run pytest
 
       # Install the latest version of ruff
-      - uses: astral-sh/ruff-action@v3
+      - uses: astral-sh/ruff-action@v4.1.0
         with:
           version: "latest"
 
